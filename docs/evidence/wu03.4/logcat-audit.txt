@@ -1,0 +1,105 @@
+09-16 19:36:30.990   591   963 V SplashScreenExceptionList: SplashScreen checking exception for package example.livematch.android (target sdk:35) -> false
+09-16 19:36:31.027   591  1728 W WindowManager: Exception thrown during dispatchAppVisibility Window{796519 u0 example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity EXITING}
+09-16 19:36:31.027   591  1728 W WindowManager: android.os.DeadObjectException
+09-16 19:36:37.303  1062  2188 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-16 19:36:55.345  1062  1731 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-16 19:37:04.368  1062  1075 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-16 19:38:13.547  1062  1898 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-16 19:38:16.556  1062  2185 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-16 19:38:22.571  1062  2187 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-16 19:39:04.671  1062  2188 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-16 19:39:10.689  1062  2188 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-16 19:39:20.446   591   812 W EmulatorClipboardMonitor: java.io.EOFException
+09-16 19:39:20.475   988   988 W Telephony: registerMmTelCapabilityCallback: registration failed, no ImsService available. Exception: code: 1
+09-16 19:39:20.535   988   988 W Telephony: registerMmTelCapabilityCallback: registration failed, no ImsService available. Exception: code: 1
+09-16 19:39:20.535   988   988 W Telephony: registerImsRegistrationCallback: registration failed, no ImsService available. Exception: code: 1
+09-19 15:42:39.064   988   988 W Telephony: registerMmTelCapabilityCallback: registration failed, no ImsService available. Exception: code: 1
+09-19 15:42:39.542 27763 27787 E CombinedComponentSuspen: java.util.concurrent.ExecutionException: ftw: Service rejected request (status=5)
+09-19 15:42:39.554  1062  1240 W AsyncOperation: OperationException[Status{statusCode=No config packages for log source, or config package not registered, resolution=null}]
+09-19 15:42:40.047 24393 28822 W BugleCms: LinkedAccountManager: No valid stored accountId, throwing NoLinkedAccountException.
+09-19 15:42:40.065 24393 24411 W SyncManagerImpl: java.util.concurrent.CancellationException: Task was cancelled.
+09-19 15:42:40.081   988   988 W Telephony: registerMmTelCapabilityCallback: registration failed, no ImsService available. Exception: code: 1
+09-19 15:42:40.081   988   988 W Telephony: registerImsRegistrationCallback: registration failed, no ImsService available. Exception: code: 1
+09-19 15:42:40.138   988   988 W Telephony: registerMmTelCapabilityCallback: registration failed, no ImsService available. Exception: code: 1
+09-19 15:42:40.138   988   988 W Telephony: registerImsRegistrationCallback: registration failed, no ImsService available. Exception: code: 1
+09-19 15:42:40.192   988   988 W Telephony: registerMmTelCapabilityCallback: registration failed, no ImsService available. Exception: code: 1
+09-19 15:42:40.862  1062 28917 W TapAndPay: java.lang.NullPointerException: NfcAdapter is null
+09-19 15:42:41.926  1062  2187 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:42:42.330  1062  1075 W GLSUser : [AppCertManager] Exception while requesting key: 
+09-19 15:42:42.330  1062  1075 W GLSUser : java.util.concurrent.ExecutionException: bpcw: Parse Proto Exception with response code 400
+09-19 15:42:42.330  1062  1075 W GLSUser : Caused by: bpcw: Parse Proto Exception with response code 400
+09-19 15:42:42.334 15943 25141 E gclu    : java.lang.RuntimeException: ManagedChannel allocation site
+09-19 15:42:44.935  1062  1075 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:42:50.946  1062  1269 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:42:53.955  1062  1731 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:43:02.972  1062  2185 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:43:08.986  1062  1075 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:43:15.002  1062  2188 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:43:18.009  1062  1075 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:43:27.024  1062  1075 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:43:45.068  1062  1269 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:43:48.075  1062  1269 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:43:51.080  1062  1269 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:43:57.094  1062  1075 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:44:06.118  1062  1731 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:44:12.128  1062  2187 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:44:17.071  1062 28917 W GLSUser : [AppCertManager] Exception while requesting key: 
+09-19 15:44:17.071  1062 28917 W GLSUser : java.util.concurrent.ExecutionException: bpcw: Parse Proto Exception with response code 400
+09-19 15:44:17.071  1062 28917 W GLSUser : Caused by: bpcw: Parse Proto Exception with response code 400
+09-19 15:44:17.113  1062 29224 W Conscrypt: Could not set socket write timeout: java.net.SocketException: Socket closed
+09-19 15:44:17.619  1062 29224 W Conscrypt: Could not set socket write timeout: java.net.SocketException: Socket closed
+09-19 15:44:17.725  1062  2021 W AlarmManager: java.lang.IllegalArgumentException: alarm "NetworkLocationLocator" has short window length
+09-19 15:44:24.152  1062  2187 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:44:33.177  1062  1898 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:45:12.263  1062  2188 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:45:21.284  1062  2188 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:46:15.404  1062  2188 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:46:21.420  1062  1075 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:46:30.441  1062  1075 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:46:48.484  1062  2185 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:46:54.496  1062  2188 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:47:33.592  1062  2185 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:47:42.614  1062  1269 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:48:06.664  1062  2188 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:48:09.606   591  2118 V SplashScreenExceptionList: SplashScreen checking exception for package example.livematch.android (target sdk:35) -> false
+09-19 15:48:09.625   591  1096 W WindowManager: Exception thrown during dispatchAppVisibility Window{22cf710 u0 example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity EXITING}
+09-19 15:48:09.625   591  1096 W WindowManager: android.os.DeadObjectException
+09-19 15:48:12.665  1062  2188 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:49:00.774  1062  2188 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:49:09.804  1062  1269 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:49:32.528   591  2118 E SystemServiceRegistry: android.os.ServiceManager$ServiceNotFoundException: No service published for: persistent_data_block
+09-19 15:49:32.673   591  1096 V SplashScreenExceptionList: SplashScreen checking exception for package example.livematch.android (target sdk:35) -> false
+09-19 15:49:32.691   591  2119 W WindowManager: Exception thrown during dispatchAppVisibility Window{ddee5d0 u0 example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity EXITING}
+09-19 15:49:32.691   591  2119 W WindowManager: android.os.DeadObjectException
+09-19 15:49:48.912  1062  2763 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:49:57.938  1062  2185 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:50:06.957  1062  2185 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:50:12.969  1062  2563 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:50:55.070  1062  1269 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:50:58.738   591   903 E SystemServiceRegistry: android.os.ServiceManager$ServiceNotFoundException: No service published for: persistent_data_block
+09-19 15:50:58.859   591  2118 V SplashScreenExceptionList: SplashScreen checking exception for package example.livematch.android (target sdk:35) -> false
+09-19 15:50:58.889   591  1849 W WindowManager: Exception thrown during dispatchAppVisibility Window{bb63d64 u0 example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity EXITING}
+09-19 15:50:58.889   591  1849 W WindowManager: android.os.DeadObjectException
+09-19 15:51:01.080  1062  2763 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:51:34.157  1062  1269 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:51:40.170  1062  2763 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:51:49.527   591   662 V SplashScreenExceptionList: SplashScreen checking exception for package example.livematch.android (target sdk:35) -> false
+09-19 15:51:49.560   591  1729 W WindowManager: Exception thrown during dispatchAppVisibility Window{48897 u0 example.livematch.android/example.livematch.android.MainActivity EXITING}
+09-19 15:51:49.560   591  1729 W WindowManager: android.os.DeadObjectException
+09-19 15:52:07.242  1062  2563 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:52:13.258  1062  1269 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+09-19 15:52:13.647   591  1729 E SystemServiceRegistry: android.os.ServiceManager$ServiceNotFoundException: No service published for: persistent_data_block
+09-19 15:52:13.769   591  2119 V SplashScreenExceptionList: SplashScreen checking exception for package example.livematch.android (target sdk:35) -> false
+09-19 15:52:13.791   591  2106 W WindowManager: Exception thrown during dispatchAppVisibility Window{d73443 u0 example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity EXITING}
+09-19 15:52:13.791   591  2106 W WindowManager: android.os.DeadObjectException
+09-19 15:52:55.287   591  1751 E SystemServiceRegistry: android.os.ServiceManager$ServiceNotFoundException: No service published for: persistent_data_block
+09-19 15:52:55.451   591  1844 V SplashScreenExceptionList: SplashScreen checking exception for package example.livematch.android (target sdk:35) -> false
+09-19 15:52:55.476   591  2106 W WindowManager: Exception thrown during dispatchAppVisibility Window{890663 u0 example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity EXITING}
+09-19 15:52:55.476   591  2106 W WindowManager: android.os.DeadObjectException
+09-19 15:52:59.916   591  2112 V SplashScreenExceptionList: SplashScreen checking exception for package example.livematch.android (target sdk:35) -> false
+09-19 15:52:59.939   591  1849 W WindowManager: Exception thrown during dispatchAppVisibility Window{24ab11c u0 example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity EXITING}
+09-19 15:52:59.939   591  1849 W WindowManager: android.os.DeadObjectException
+09-19 15:53:00.101 29819 29819 W System.err: error unknown Paint Type 14
+09-19 15:53:00.101 29819 29819 W System.err: error unknown Paint Type 14
+09-19 15:53:00.111 29819 29819 W System.err: error unknown Paint Type 14
+09-19 15:53:00.111 29819 29819 W System.err: error unknown Paint Type 14

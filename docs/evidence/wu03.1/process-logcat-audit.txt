@@ -1,0 +1,8 @@
+mode=pre_attach
+pid=27508
+relevant_matches=none
+error_priority_lines:
+mode=post_attach
+pid=27588
+relevant_matches=none
+error_priority_lines:

@@ -1,0 +1,63 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :creator-jvm:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :contract:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :creator-jvm:processResources NO-SOURCE
+> Task :app-android:stageDiagnosticFixture UP-TO-DATE
+> Task :app-android:stageScheduledFixture UP-TO-DATE
+> Task :app-android:preBuild UP-TO-DATE
+> Task :app-android:preDebugBuild UP-TO-DATE
+> Task :app-android:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app-android:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :contract:compileKotlin UP-TO-DATE
+> Task :contract:compileJava NO-SOURCE
+> Task :contract:processResources NO-SOURCE
+> Task :contract:classes UP-TO-DATE
+> Task :contract:jar UP-TO-DATE
+> Task :creator-jvm:compileKotlin UP-TO-DATE
+> Task :creator-jvm:compileJava NO-SOURCE
+> Task :creator-jvm:classes UP-TO-DATE
+> Task :app-android:checkDebugAarMetadata UP-TO-DATE
+> Task :app-android:generateDebugResValues UP-TO-DATE
+> Task :app-android:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app-android:generateDebugResources UP-TO-DATE
+> Task :app-android:mergeDebugResources UP-TO-DATE
+> Task :app-android:packageDebugResources UP-TO-DATE
+> Task :app-android:parseDebugLocalResources UP-TO-DATE
+> Task :app-android:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app-android:extractDeepLinksDebug UP-TO-DATE
+> Task :app-android:processDebugMainManifest UP-TO-DATE
+> Task :app-android:processDebugManifest UP-TO-DATE
+> Task :app-android:processDebugManifestForPackage UP-TO-DATE
+> Task :app-android:processDebugResources UP-TO-DATE
+> Task :app-android:compileDebugKotlin UP-TO-DATE
+> Task :app-android:javaPreCompileDebug UP-TO-DATE
+> Task :app-android:compileDebugJavaWithJavac NO-SOURCE
+> Task :creator-jvm:checkScheduledFixture
+> Task :app-android:mergeDebugShaders UP-TO-DATE
+> Task :app-android:compileDebugShaders NO-SOURCE
+> Task :app-android:generateDebugAssets UP-TO-DATE
+> Task :app-android:mergeDebugAssets UP-TO-DATE
+> Task :app-android:compressDebugAssets UP-TO-DATE
+> Task :app-android:desugarDebugFileDependencies UP-TO-DATE
+> Task :app-android:dexBuilderDebug UP-TO-DATE
+> Task :app-android:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :app-android:processDebugJavaRes UP-TO-DATE
+> Task :app-android:mergeDebugJavaResource UP-TO-DATE
+> Task :app-android:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app-android:mergeExtDexDebug UP-TO-DATE
+> Task :app-android:mergeLibDexDebug UP-TO-DATE
+> Task :app-android:mergeProjectDexDebug UP-TO-DATE
+> Task :app-android:mergeDebugJniLibFolders UP-TO-DATE
+> Task :app-android:mergeDebugNativeLibs UP-TO-DATE
+> Task :app-android:stripDebugDebugSymbols UP-TO-DATE
+> Task :app-android:validateSigningDebug UP-TO-DATE
+> Task :app-android:writeDebugAppMetadata UP-TO-DATE
+> Task :app-android:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :app-android:packageDebug UP-TO-DATE
+> Task :app-android:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :app-android:assembleDebug UP-TO-DATE
+> Task :creator-jvm:checkDiagnosticFixture
+
+BUILD SUCCESSFUL in 4s
+42 actionable tasks: 2 executed, 40 up-to-date

@@ -1,0 +1,6 @@
+snapshot=post-implementation
+created_utc=2026-09-15T23:08:35Z
+1b02a55106f29bfb01530a45c3e0a210f3331360f9ef6c6e545857134057b70d  gradle/libs.versions.toml
+4bb1b1731833db661404bd3393bcddb4b63cf54603dbd0ba8fbcde361a4a703a  app-android/build.gradle.kts
+a35cc7e571a48cdb60865b628043b093866dae3123ec56fefc2294cc130b7965  app-android/src/main/kotlin/example/livematch/android/MainActivity.kt
+892f2aa752863d48f48c6985ff86309f89ca8fb6e142915d23af71a1406bfec6  app-android/src/androidTest/kotlin/example/livematch/android/ScheduledFixturePlaybackTest.kt

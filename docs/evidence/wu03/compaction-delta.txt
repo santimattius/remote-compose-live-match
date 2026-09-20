@@ -1,0 +1,10 @@
+# WU3 evidence compaction delta
+
+Native objective/work unit: `wu03-evidence-budget-remediation`
+Native attempt ordinal: 12
+Native recorded `changed_lines=393` (authoritative; corrects the earlier writer estimate of 392).
+Evidence revision: `sha256:274aff05c6a40f022e04885a1b559088ada2c135aa7d368e052688a522afbe48`
+
+Breakdown: 378 raw-log deletions + 5 manifest-line deletions + native accounting of 10 report diff lines = 393 total.
+
+`authored-delta.txt` is the pre-compaction 181-line WU3 implementation receipt. The device-playback report was compacted from 92 to 90 lines; the raw-log deletions are separate evidence files, and this is the later evidence-only receipt.

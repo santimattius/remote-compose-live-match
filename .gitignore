@@ -1,0 +1,18 @@
+# Local Pi runtime state
+.atl/
+.pi/
+
+# Gradle
+.gradle/
+**/build/
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+local.properties
+
+# Kotlin
+.kotlin/
+
+# macOS
+.DS_Store

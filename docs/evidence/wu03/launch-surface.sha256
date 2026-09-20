@@ -1,0 +1,7 @@
+snapshot=launch-baseline
+created_utc=2026-09-15T22:57:30Z
+allowed_edit_surfaces=gradle/libs.versions.toml,app-android/build.gradle.kts,app-android/src/main/kotlin/example/livematch/android/MainActivity.kt,app-android/src/androidTest/**,docs/evidence/wu03-device-playback.md,docs/evidence/wu03/**
+04f5edf10650d175ca5cab69e953033783fab4932b80629484270e4ac82fd5ae  app-android/build.gradle.kts
+938c0309daa0e74993459553775c2d1c360680fc18214eea26b1fd13d7de76c9  app-android/src/main/kotlin/example/livematch/android/MainActivity.kt
+b2f74b74d77e44258ab54fcc0bc9415068f8095e118c3fdd4ef6a33db3ca8c5e  docs/evidence/wu03/launch-surface.sha256
+065ed2e0293e778b738452d8fcde586ef8ed82676e41cd76340187f2c9f56606  gradle/libs.versions.toml

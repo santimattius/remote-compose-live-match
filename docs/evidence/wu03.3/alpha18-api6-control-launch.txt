@@ -1,0 +1,12 @@
+$ adb -s emulator-5556 logcat -c
+$ adb -s emulator-5556 shell am force-stop example.livematch.android
+$ adb -s emulator-5556 shell am start -W -n example.livematch.android/.DiagnosticPlaybackActivity --es mode post_attach --es fixture alpha18-api6-control.rc
+Starting: Intent { cmp=example.livematch.android/.DiagnosticPlaybackActivity (has extras) }
+Status: ok
+LaunchState: COLD
+Activity: example.livematch.android/.DiagnosticPlaybackActivity
+TotalTime: 184
+WaitTime: 186
+Complete
+$ adb -s emulator-5556 shell pidof example.livematch.android
+29660

@@ -1,0 +1,22 @@
+--------- beginning of main
+09-19 16:12:05.380  3773  3773 I vematch.android: Late-enabling -Xcheck:jni
+09-19 16:12:05.389  3773  3773 I vematch.android: Using CollectorTypeCMC GC.
+09-19 16:12:05.397  3773  3773 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+09-19 16:12:05.410  3773  3773 W ziparchive: Unable to open '/data/app/~~syjzo1gO21i_4YFeK6NebQ==/example.livematch.android-5IhgXMwIfZD2FRnXi4-c_Q==/base.dm': No such file or directory
+09-19 16:12:05.410  3773  3773 W ziparchive: Unable to open '/data/app/~~syjzo1gO21i_4YFeK6NebQ==/example.livematch.android-5IhgXMwIfZD2FRnXi4-c_Q==/base.dm': No such file or directory
+09-19 16:12:05.541  3773  3773 D nativeloader: Configuring clns-7 for other apk /data/app/~~syjzo1gO21i_4YFeK6NebQ==/example.livematch.android-5IhgXMwIfZD2FRnXi4-c_Q==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~syjzo1gO21i_4YFeK6NebQ==/example.livematch.android-5IhgXMwIfZD2FRnXi4-c_Q==/lib/arm64:/data/app/~~syjzo1gO21i_4YFeK6NebQ==/example.livematch.android-5IhgXMwIfZD2FRnXi4-c_Q==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/example.livematch.android
+09-19 16:12:05.542  3773  3773 D CompatChangeReporter: Compat change id reported: 202956589; UID 10249; state: ENABLED
+09-19 16:12:05.549  3773  3773 V GraphicsEnvironment: Currently set values for:
+09-19 16:12:05.549  3773  3773 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+09-19 16:12:05.549  3773  3773 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+09-19 16:12:05.549  3773  3773 V GraphicsEnvironment: Global.Settings values are invalid: number of packages: 0, number of values: 0
+09-19 16:12:05.550  3773  3773 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+09-19 16:12:05.556  3773  3773 D CompatChangeReporter: Compat change id reported: 279646685; UID 10249; state: ENABLED
+09-19 16:12:05.587  3773  3773 D CompatChangeReporter: Compat change id reported: 309578419; UID 10249; state: ENABLED
+09-19 16:12:05.605  3773  3773 W HWUI    : Unknown dataspace 0
+09-19 16:12:05.732  3773  3779 I vematch.android: Compiler allocated 5250KB to compile void android.view.ViewRootImpl.performTraversals()
+09-19 16:12:05.740  3773  3788 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+09-19 16:12:05.741  3773  3788 I EGL_emulation: Opening libGLESv2_emulation.so
+09-19 16:12:05.746  3773  3788 W HWUI    : Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+09-19 16:12:05.746  3773  3788 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+09-19 16:12:05.753  3773  3788 I Gralloc4: mapper 4.x is not supported

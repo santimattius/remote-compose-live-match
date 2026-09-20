@@ -1,0 +1,5 @@
+$ adb -s emulator-5554 install -r app-android/build/outputs/apk/debug/app-android-debug.apk
+Performing Streamed Install
+Success
+$ adb -s emulator-5554 shell pm path example.livematch.android
+package:/data/app/~~BOUrW_2mLjQd_FU43JUH_Q==/example.livematch.android-qj0mtRwXpBF1X1QlGxJD1Q==/base.apk

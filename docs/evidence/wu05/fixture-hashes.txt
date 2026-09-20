@@ -1,0 +1,8 @@
+creator=procedural-jvm-finished-match
+version=1
+viewport=320x180
+locale=en-US
+theme=DARK
+generationEpochMillis=1700000000000
+sha256=0e4af90474d3e7ee4b64e9bc85ebe4d11f3f3da5f4e29a72982bcf86b66be377
+signingBoundary=EXTERNAL_SIGNATURE_REQUIRED

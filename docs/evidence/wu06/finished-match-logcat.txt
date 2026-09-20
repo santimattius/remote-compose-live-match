@@ -1,0 +1,292 @@
+--------- beginning of main
+09-19 17:16:58.020  1167  1167 D StateManager: createAtomicAnimation - fromState: Background, toState: Normal, partial trace:
+09-19 17:16:58.020  1167  1167 D StateManager: 	at com.android.quickstep.util.StaggeredWorkspaceAnim.prepareToAnimate(go/retraceme 31f9979659277bb965985aff1272c33e3c3c9e755b77166d20a2465454178f2c:22)
+09-19 17:16:58.020  1167  1167 D StateManager: 	at com.android.quickstep.util.StaggeredWorkspaceAnim.<init>(go/retraceme 31f9979659277bb965985aff1272c33e3c3c9e755b77166d20a2465454178f2c:4)
+09-19 17:16:58.020  1167  1167 D StateManager: 	at com.android.quickstep.util.StaggeredWorkspaceAnim.<init>(go/retraceme 31f9979659277bb965985aff1272c33e3c3c9e755b77166d20a2465454178f2c:1)
+09-19 17:16:58.024  1167  1167 D SearchTargetUtil: query= size=0
+09-19 17:16:58.042   594   729 I ImeTracker: com.google.android.apps.nexuslauncher:f864cd89: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+09-19 17:16:58.042   594   729 I ImeTracker: com.google.android.apps.nexuslauncher:f864cd89: onCancelled at PHASE_SERVER_SHOULD_HIDE
+09-19 17:16:58.043  1331  1331 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():3157 
+09-19 17:16:58.043  1331  1331 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2248 repeatCheckTimes = 0, locked = false
+09-19 17:16:58.043  1331  1331 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1986 onStartInput(EditorInfo{EditorInfo{packageName=com.google.android.apps.nexuslauncher, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+09-19 17:16:58.043  1331  1331 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2248 repeatCheckTimes = 1, locked = false
+09-19 17:16:58.043  1331  1331 I AndroidIME: InputBundleManager.loadActiveInputBundleId():450 loadActiveInputBundleId: und-Latn-x-password, password
+--------- beginning of system
+09-19 17:16:58.044   594   999 W PackageConfigPersister: App-specific configuration not found for packageName: com.google.android.apps.nexuslauncher and userId: 0
+09-19 17:16:58.056   594   639 W ActivityTaskManager: Unable to send transaction to client proc example.livematch.android: no app thread
+09-19 17:16:58.063  1167  1494 D EGL_emulation: app_time_stats: avg=50.10ms min=0.44ms max=1739.72ms count=51
+09-19 17:16:58.119   594  1970 W ActivityTaskManager: callingPackage for (uid=2000, pid=3928) has no WPC
+09-19 17:16:58.120   594  1970 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_OVERRIDE
+09-19 17:16:58.120   594  1970 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_FULLSCREEN_OVERRIDE
+09-19 17:16:58.120   594  1970 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE
+09-19 17:16:58.120   594  1970 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10215, packageName = null, attributionTag = null, token = android.os.Binder@db60fae, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+09-19 17:16:58.120   594  1970 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_RESIZEABLE_ACTIVITY_OVERRIDES
+09-19 17:16:58.120   594  1970 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_MIN_ASPECT_RATIO_OVERRIDE
+09-19 17:16:58.121   594  1970 V SplashScreenExceptionList: SplashScreen checking exception for package example.livematch.android (target sdk:35) -> false
+09-19 17:16:58.121   594  1970 I ActivityTaskManager: Add Task{6d445ea #64 type=standard A=10215:example.livematch.android} to hidden list because adding Task{d03a828 #65 type=standard A=10215:example.livematch.android}
+09-19 17:16:58.122   594  1970 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=example.livematch.android/.DiagnosticPlaybackActivity (has extras)} with LAUNCH_MULTIPLE from uid 2000 (BAL_ALLOW_PERMISSION) result code=0
+09-19 17:16:58.122   478   478 W IPCThreadState: Sending oneway calls to frozen process.
+09-19 17:16:58.123   849   947 D SplashScreenView: Build android.window.SplashScreenView{90ea5b6 V.E...... ......ID 0,0-0,0}
+09-19 17:16:58.123   849   947 D SplashScreenView: Icon: view: android.widget.ImageView{27e32b7 V.ED..... ......I. 0,0-0,0 #1020504 android:id/splashscreen_icon_view} drawable: com.android.wm.shell.startingsurface.SplashscreenIconDrawableFactory$ImmobileIconDrawable@3b98a24 size: 420
+09-19 17:16:58.123   849   947 D SplashScreenView: Branding: view: android.view.View{9eef98d G.ED..... ......I. 0,0-0,0 #1020503 android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+09-19 17:16:58.123   849   918 V WindowManagerShell: Transition requested (#38): android.os.BinderProxy@278b58e TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=65 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=example.livematch.android/.DiagnosticPlaybackActivity } baseActivity=ComponentInfo{example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity} topActivity=ComponentInfo{example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity} origActivity=null realActivity=ComponentInfo{example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity} numActivities=1 lastActiveTime=137663 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@e8ac1af} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 142 - 0, 0) topActivityInfo=ActivityInfo{471f9bc example.livematch.android.DiagnosticPlaybackActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=1080 topActivityLetterboxHeight=2424 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 38 }
+09-19 17:16:58.124   594   638 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10215, packageName = null, attributionTag = null, token = android.os.Binder@db60fae, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+09-19 17:16:58.126  1167  1167 W SplitSelectStateCtor: Missing session instanceIds
+09-19 17:16:58.126  1167  1167 D StatsLog: LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+09-19 17:16:58.126   849   918 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=false, height=527
+09-19 17:16:58.127   594  1679 I AppsFilter: interaction: PackageSetting{f7bf459 com.santimattius.basic.skeleton/10219} -> PackageSetting{78ca3c3 example.livematch.android/10215} BLOCKED
+09-19 17:16:58.127   594  1679 I AppsFilter: interaction: PackageSetting{102d8ff com.santimattius.finyo/10207} -> PackageSetting{78ca3c3 example.livematch.android/10215} BLOCKED
+09-19 17:16:58.127   594  1679 I AppsFilter: interaction: PackageSetting{8e46cc com.pedidosya.kata/10242} -> PackageSetting{78ca3c3 example.livematch.android/10215} BLOCKED
+09-19 17:16:58.127   594  1679 I AppsFilter: interaction: PackageSetting{3ee7d15 com.tencent.mmkv.sample/10223} -> PackageSetting{78ca3c3 example.livematch.android/10215} BLOCKED
+09-19 17:16:58.127  1167  1167 I TopTaskTracker: onTaskMovedToFront: (moved taskInfo to front) taskId=65, baseIntent=Intent { flg=0x10000000 cmp=example.livematch.android/.DiagnosticPlaybackActivity }
+09-19 17:16:58.128   594   789 I AppWidgetServiceImpl: Received broadcast: android.intent.action.PACKAGE_UNSTOPPED on user 0
+09-19 17:16:58.128   594   789 I AppWidgetServiceImpl: Updating package stopped masked state for uid 10215 package example.livematch.android isStopped false
+09-19 17:16:58.128   382   382 D Zygote  : Forked child process 3931
+09-19 17:16:58.128   594   648 I ActivityManager: Start proc 3931:example.livematch.android/u0a215 for next-top-activity {example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity}
+09-19 17:16:58.139   594   999 D CoreBackPreview: Window{4ff1ed4 u0 Splash Screen example.livematch.android}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@53cc83b, mPriority=0, mIsAnimationCallback=false}
+09-19 17:16:58.148  3931  3931 I vematch.android: Late-enabling -Xcheck:jni
+09-19 17:16:58.149   594   635 V WindowManager: Sent Transition (#38) createdAt=09-19 17:16:58.120 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=65 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=example.livematch.android/.DiagnosticPlaybackActivity } baseActivity=ComponentInfo{example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity} topActivity=ComponentInfo{example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity} origActivity=null realActivity=ComponentInfo{example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity} numActivities=1 lastActiveTime=137663 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{2d80d96 Task{d03a828 #65 type=standard A=10215:example.livematch.android}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 142 - 0, 0) topActivityInfo=ActivityInfo{225ad17 example.livematch.android.DiagnosticPlaybackActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= falseisLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=1080 topActivityLetterboxHeight=2424 isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatControlState=hidden freeformCameraCompatMode=inactive}}}, pipTask = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 38 }
+09-19 17:16:58.149   594   635 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+09-19 17:16:58.149   594   635 V WindowManager:     info={id=38 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+09-19 17:16:58.149   594   635 V WindowManager:         {WCT{RemoteToken{2d80d96 Task{d03a828 #65 type=standard A=10215:example.livematch.android}}} m=OPEN f=NONE leash=Surface(name=Task=65)/@0x8856b58 sb=Rect(0, 0 - 1080, 2424) eb=Rect(0, 0 - 1080, 2424) d=0 taskParent=-1},
+09-19 17:16:58.149   594   635 V WindowManager:         {WCT{RemoteToken{901d325 Task{8e25ebf #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x216bff0 sb=Rect(0, 0 - 1080, 2424) eb=Rect(0, 0 - 1080, 2424) d=0 taskParent=-1}
+09-19 17:16:58.149   594   635 V WindowManager:     ]}
+09-19 17:16:58.149   849  1499 V WindowManagerShell: onTransitionReady(transaction=2551210574959)
+09-19 17:16:58.149   849   918 V WindowManagerShell: onTransitionReady (#38) android.os.BinderProxy@278b58e: {id=38 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@c5e5ffd} m=OPEN f=NONE leash=Surface(name=Task=65)/@0x269e866 sb=Rect(0, 0 - 1080, 2424) eb=Rect(0, 0 - 1080, 2424) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@1c24f2} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xcb37a7 sb=Rect(0, 0 - 1080, 2424) eb=Rect(0, 0 - 1080, 2424) d=0 taskParent=-1}]}
+09-19 17:16:58.149   849   918 V WindowManagerShell: Transition (#38) android.os.BinderProxy@278b58e@0 ready while (#37) android.os.BinderProxy@372bb63@0 is still animating. Notify the animating transition in case they can be merged
+09-19 17:16:58.149   849   918 V WindowManagerShell:    Merge into remote: RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@6d27f13, appThread = android.app.IApplicationThread$Stub$Proxy@60a1550, debugName = QuickstepLaunchHome }
+09-19 17:16:58.149   849   918 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#37) android.os.BinderProxy@372bb63@0
+09-19 17:16:58.150   594   999 W UserManagerService: Requested status bar icon for non-badged user 0
+09-19 17:16:58.150   594   635 V WindowManager: Finish Transition (#37): created at 09-19 17:16:57.996 collect-started=0.013ms request-sent=0.039ms started=1.529ms ready=17.682ms sent=18.876ms finished=153.665ms
+09-19 17:16:58.150   594   999 E IPCThreadState: Binder transaction failure. id: 185768, BR_*: 29189, error: -22 (Invalid argument)
+09-19 17:16:58.150   594   999 W ActivityManager: pid 594 system sent binder code 7 with flags 1 to frozen apps and got error -32
+09-19 17:16:58.150   594   999 D ActivityManager: Too many transaction errors, throttling freezer binder callback.
+09-19 17:16:58.150   594   999 W WindowManager: Exception thrown during dispatchAppVisibility Window{1b953f0 u0 example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity EXITING}
+09-19 17:16:58.150   594   999 W WindowManager: android.os.DeadObjectException
+09-19 17:16:58.150   594   999 W WindowManager: 	at android.os.BinderProxy.transactNative(Native Method)
+09-19 17:16:58.150   594   999 W WindowManager: 	at android.os.BinderProxy.transact(BinderProxy.java:586)
+09-19 17:16:58.150   594   999 W WindowManager: 	at android.view.IWindow$Stub$Proxy.dispatchAppVisibility(IWindow.java:553)
+09-19 17:16:58.150   594   999 W WindowManager: 	at com.android.server.wm.WindowState.sendAppVisibilityToClients(WindowState.java:3253)
+09-19 17:16:58.150   594   999 W WindowManager: 	at com.android.server.wm.WindowContainer.sendAppVisibilityToClients(WindowContainer.java:1289)
+09-19 17:16:58.150   594   999 W WindowManager: 	at com.android.server.wm.WindowToken.setClientVisible(WindowToken.java:403)
+09-19 17:16:58.150   594   999 W WindowManager: 	at com.android.server.wm.ActivityRecord.setClientVisible(ActivityRecord.java:7166)
+09-19 17:16:58.150   594   999 W WindowManager: 	at com.android.server.wm.ActivityRecord.postApplyAnimation(ActivityRecord.java:5881)
+09-19 17:16:58.150   594   999 W WindowManager: 	at com.android.server.wm.ActivityRecord.commitVisibility(ActivityRecord.java:5823)
+09-19 17:16:58.150   594   999 W WindowManager: 	at com.android.server.wm.Transition.finishTransition(Transition.java:1286)
+09-19 17:16:58.150   594   999 W WindowManager: 	at com.android.server.wm.TransitionController.finishTransition(TransitionController.java:937)
+09-19 17:16:58.150   594   999 W WindowManager: 	at com.android.server.wm.WindowOrganizerController.finishTransition(WindowOrganizerController.java:494)
+09-19 17:16:58.150   594   999 W WindowManager: 	at android.window.IWindowOrganizerController$Stub.onTransact(IWindowOrganizerController.java:289)
+09-19 17:16:58.150   594   999 W WindowManager: 	at com.android.server.wm.WindowOrganizerController.onTransact(WindowOrganizerController.java:204)
+09-19 17:16:58.150   594   999 W WindowManager: 	at android.os.Binder.execTransactInternal(Binder.java:1505)
+09-19 17:16:58.150   594   999 W WindowManager: 	at android.os.Binder.execTransact(Binder.java:1444)
+09-19 17:16:58.150   594   999 W Process : Unable to open /proc/3864/status
+--------- beginning of kernel
+09-19 17:16:58.152   999   999 I binder  : 999:594 cannot find target node
+09-19 17:16:58.152   999   999 I binder  : 594:999 transaction async to 0:0 failed 185768/29189/-22, size 64-0 line 3265
+09-19 17:16:58.151   849   918 V WindowManagerShell: Playing animation for (#38) android.os.BinderProxy@278b58e@0
+09-19 17:16:58.151   849   918 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@b54a460
+09-19 17:16:58.151   849   918 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@f5f6d19
+09-19 17:16:58.151   849   918 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@93541de
+09-19 17:16:58.151   849   918 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@572dfbf
+09-19 17:16:58.151   849   918 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@ecfa68c
+09-19 17:16:58.151   849   918 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+09-19 17:16:58.151   849   918 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@f70c1d5
+09-19 17:16:58.151   594  1679 W UserManagerService: Requested status bar icon for non-badged user 0
+09-19 17:16:58.151   849   918 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@dcf9dea
+09-19 17:16:58.151   849   918 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=38 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@c5e5ffd} m=OPEN f=NONE leash=Surface(name=Task=65)/@0x269e866 sb=Rect(0, 0 - 1080, 2424) eb=Rect(0, 0 - 1080, 2424) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@1c24f2} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xcb37a7 sb=Rect(0, 0 - 1080, 2424) eb=Rect(0, 0 - 1080, 2424) d=0 taskParent=-1}]}
+09-19 17:16:58.151   594  1679 W UserManagerService: Requested status bar icon for non-badged user 0
+09-19 17:16:58.151   849   918 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=undefined independent=true modes=[OPEN,TO_FRONT] flags=IN_TASK_WITH_EMBEDDED_ACTIVITY mustBeTask=false order=ANY topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity} launchCookie=null},{atype=undefined independent=true modes=[CLOSE,TO_BACK] flags=IN_TASK_WITH_EMBEDDED_ACTIVITY mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@b273277, appThread = android.app.IApplicationThread$Stub$Proxy@1aeee4, debugName = OverlaySwipeBack }}
+09-19 17:16:58.151   849   918 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=dream independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null},{atype=home independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@8995f4d, appThread = android.app.IApplicationThread$Stub$Proxy@6e53a02, debugName = LauncherToDream }}
+09-19 17:16:58.151   849   918 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity} launchCookie=null},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@6d27f13, appThread = android.app.IApplicationThread$Stub$Proxy@60a1550, debugName = QuickstepLaunchHome }}
+09-19 17:16:58.151   849   918 V WindowManagerShell:  Delegate animation for (#38) to null
+09-19 17:16:58.151   849   918 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultTransitionHandler@360568d
+09-19 17:16:58.151   849   918 V WindowManagerShell: start default transition animation, info = {id=38 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@c5e5ffd} m=OPEN f=NONE leash=Surface(name=Task=65)/@0x269e866 sb=Rect(0, 0 - 1080, 2424) eb=Rect(0, 0 - 1080, 2424) d=0 taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@1c24f2} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xcb37a7 sb=Rect(0, 0 - 1080, 2424) eb=Rect(0, 0 - 1080, 2424) d=0 taskParent=-1}]}
+09-19 17:16:58.151   849   918 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@2c4d1c0 animAttr=0x13 type=OPEN isEntrance=false
+09-19 17:16:58.151   849   918 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@35fef9 animAttr=0x12 type=OPEN isEntrance=true
+09-19 17:16:58.151   849   918 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@360568d
+09-19 17:16:58.155  3931  3931 I vematch.android: Using CollectorTypeCMC GC.
+09-19 17:16:58.158   452   482 I adbd    : jdwp connection from 3931
+09-19 17:16:58.158  1167  1167 I TopTaskTracker: onTaskRemoved: taskId=64
+09-19 17:16:58.158  1167  1167 I TopTaskTracker: onTaskRemoved: taskId=64
+09-19 17:16:58.158  3931  3931 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+09-19 17:16:58.168  3931  3931 W ziparchive: Unable to open '/data/app/~~J_8esWJdEk73OpYYUqQjMA==/example.livematch.android-UYEqIGmeckx_r7V6fYH6QA==/base.dm': No such file or directory
+09-19 17:16:58.168  3931  3931 W ziparchive: Unable to open '/data/app/~~J_8esWJdEk73OpYYUqQjMA==/example.livematch.android-UYEqIGmeckx_r7V6fYH6QA==/base.dm': No such file or directory
+09-19 17:16:58.188   433   433 E BpTransactionCompletedListener: Failed to transact (-32)
+09-19 17:16:58.189   405   405 I RanchuHwc: logCompositionFallbackIfChanged: layer 77 CompositionType fallback from 2 to 1
+09-19 17:16:58.306  3931  3931 D nativeloader: Configuring clns-7 for other apk /data/app/~~J_8esWJdEk73OpYYUqQjMA==/example.livematch.android-UYEqIGmeckx_r7V6fYH6QA==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~J_8esWJdEk73OpYYUqQjMA==/example.livematch.android-UYEqIGmeckx_r7V6fYH6QA==/lib/arm64:/data/app/~~J_8esWJdEk73OpYYUqQjMA==/example.livematch.android-UYEqIGmeckx_r7V6fYH6QA==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/example.livematch.android
+09-19 17:16:58.307  3931  3931 D CompatChangeReporter: Compat change id reported: 202956589; UID 10215; state: ENABLED
+09-19 17:16:58.308   433   668 W VsyncModulator: setTransactionSchedule: Unexpected EarlyEnd
+09-19 17:16:58.312  3931  3931 V GraphicsEnvironment: Currently set values for:
+09-19 17:16:58.312  3931  3931 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+09-19 17:16:58.312  3931  3931 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+09-19 17:16:58.312  3931  3931 V GraphicsEnvironment: Global.Settings values are invalid: number of packages: 0, number of values: 0
+09-19 17:16:58.312  3931  3931 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+09-19 17:16:58.319  3931  3931 D CompatChangeReporter: Compat change id reported: 279646685; UID 10215; state: ENABLED
+09-19 17:16:58.322   594   999 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ENABLE_FAKE_FOCUS
+09-19 17:16:58.354  3931  3931 D CompatChangeReporter: Compat change id reported: 309578419; UID 10215; state: ENABLED
+09-19 17:16:58.375  3931  3931 W HWUI    : Unknown dataspace 0
+09-19 17:16:58.440   849   918 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#38) android.os.BinderProxy@278b58e@0
+09-19 17:16:58.441   594   635 V WindowManager: Finish Transition (#38): created at 09-19 17:16:58.120 collect-started=0.01ms request-sent=2.047ms started=3.785ms ready=27.882ms sent=28.567ms finished=320.944ms
+09-19 17:16:58.441  1167  1167 D VRI[NexusLauncherActivity]: visibilityChanged oldVisibility=true newVisibility=false
+09-19 17:16:58.442   849   918 V WindowManagerShell: Track 0 became idle
+09-19 17:16:58.442   849   918 V WindowManagerShell: All active transition animations finished
+09-19 17:16:58.443   594   999 W UserManagerService: Requested status bar icon for non-badged user 0
+09-19 17:16:58.443   594   999 W UserManagerService: Requested status bar icon for non-badged user 0
+09-19 17:16:58.455  1167  1167 D NexusLauncherModelDelegate: notifySmartspaceEvent: SmartspaceTargetEvent{mSmartspaceTarget=null, mSmartspaceActionId='null', mEventType=7}
+09-19 17:16:58.485  3931  3936 I vematch.android: Compiler allocated 5250KB to compile void android.view.ViewRootImpl.performTraversals()
+09-19 17:16:58.522   594   999 D CoreBackPreview: Window{2db3e59 u0 example.livematch.android/example.livematch.android.DiagnosticPlaybackActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@50f63cd, mPriority=0, mIsAnimationCallback=false}
+09-19 17:16:58.526  3931  3946 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+09-19 17:16:58.527  3931  3946 I EGL_emulation: Opening libGLESv2_emulation.so
+09-19 17:16:58.529  3931  3946 W HWUI    : Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+09-19 17:16:58.529  3931  3946 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+09-19 17:16:58.540   164   164 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+09-19 17:16:58.541  3931  3946 I Gralloc4: mapper 4.x is not supported
+09-19 17:16:58.543   163   163 I servicemanager: Caller(pid=3931,uid=10215,sid=u:r:untrusted_app:s0:c215,c256,c512,c768) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+09-19 17:16:58.549   594   635 W ziparchive: Unable to open '/data/app/~~J_8esWJdEk73OpYYUqQjMA==/example.livematch.android-UYEqIGmeckx_r7V6fYH6QA==/base.dm': No such file or directory
+09-19 17:16:58.550   594   635 I ActivityTaskManager: Displayed example.livematch.android/.DiagnosticPlaybackActivity for user 0: +429ms
+09-19 17:16:58.559  3931  3931 W System.err: error unknown Paint Type 14
+09-19 17:16:58.559  3931  3931 W System.err: error unknown Paint Type 14
+09-19 17:16:58.575  1167  1167 D BaseDepthController: setSurface:
+09-19 17:16:58.575  1167  1167 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+09-19 17:16:58.575  1167  1167 D BaseDepthController: 	mSurface: null
+09-19 17:16:58.575  1167  1167 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+09-19 17:16:58.575  1167  1167 D StateManager: goToState - fromState: Normal, toState: Normal, partial trace:
+09-19 17:16:58.575  1167  1167 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme 31f9979659277bb965985aff1272c33e3c3c9e755b77166d20a2465454178f2c:4)
+09-19 17:16:58.575  1167  1167 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme 31f9979659277bb965985aff1272c33e3c3c9e755b77166d20a2465454178f2c:1)
+09-19 17:16:58.575  1167  1167 D StateManager: 	at com.android.launcher3.statemanager.StatefulActivity.onStop(go/retraceme 31f9979659277bb965985aff1272c33e3c3c9e755b77166d20a2465454178f2c:34)
+09-19 17:16:58.575  1167  1167 D StateManager: cancelAnimation - with ongoing animation, partial trace:
+09-19 17:16:58.575  1167  1167 D StateManager: 	at com.android.launcher3.statemanager.StateManager.goToState(go/retraceme 31f9979659277bb965985aff1272c33e3c3c9e755b77166d20a2465454178f2c:16)
+09-19 17:16:58.575  1167  1167 D StateManager: 	at com.android.launcher3.statemanager.StateManager.goToState(go/retraceme 31f9979659277bb965985aff1272c33e3c3c9e755b77166d20a2465454178f2c:2)
+09-19 17:16:58.575  1167  1167 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme 31f9979659277bb965985aff1272c33e3c3c9e755b77166d20a2465454178f2c:4)
+09-19 17:16:58.575  1167  1167 D StateManager: onStateTransitionStart - state: Normal
+09-19 17:16:58.575  1167  1167 D StateManager: onStateTransitionEnd - state: Normal
+09-19 17:16:58.575  1167  1167 D RecentsView: reset - mEnableDrawingLiveTile: false, mRecentsAnimationController: null
+09-19 17:16:58.576  1167  1167 D StatsLog: LAUNCHER_ONSTOP
+09-19 17:16:58.576   594  1970 I AppWidgetServiceImpl: setAppWidgetHidden() 0
+09-19 17:16:58.576  1167  1552 D OneSearchSuggestProvider: Shut down the binder channel
+09-19 17:16:58.576  1167  1167 D StatsLog: LAUNCHER_GOOGLE_SEARCH_RESTORE_LIST_SIZE_AFTER_ACTIVITY_RESTART
+09-19 17:16:58.577   594   729 I ImeTracker: example.livematch.android:6c78000f: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+09-19 17:16:58.577   594   729 I ImeTracker: example.livematch.android:6c78000f: onCancelled at PHASE_SERVER_SHOULD_HIDE
+09-19 17:16:58.577  1167  1719 I IPCThreadState: oneway function results for code 2 on binder at 0xb4000072488a7d40 will be dropped but finished with status UNKNOWN_TRANSACTION
+09-19 17:16:58.578  1331  1331 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():3157 
+09-19 17:16:58.579  1331  1331 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2248 repeatCheckTimes = 0, locked = false
+09-19 17:16:58.579  1331  1331 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1986 onStartInput(EditorInfo{EditorInfo{packageName=example.livematch.android, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+09-19 17:16:58.579  1331  1331 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2248 repeatCheckTimes = 1, locked = false
+09-19 17:16:58.580  1331  1331 I AndroidIME: InputBundleManager.loadActiveInputBundleId():450 loadActiveInputBundleId: und-Latn-x-password, password
+09-19 17:16:58.580   594  1679 W PackageConfigPersister: App-specific configuration not found for packageName: example.livematch.android and userId: 0
+09-19 17:16:58.877  1081  2058 I FontLog : Received query Noto Color Emoji Compat, URI content://com.google.android.gms.fonts [CONTEXT service_id=132 ]
+09-19 17:16:58.878  1081  2058 I FontLog : Query [emojicompat-emoji-font] resolved to {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false} [CONTEXT service_id=132 ]
+09-19 17:16:58.878  1081  2058 I FontLog : Fetch {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false} end status Status{statusCode=SUCCESS, resolution=null} [CONTEXT service_id=132 ]
+09-19 17:16:58.881  1081  2058 I FontLog : Pulling font file for id = 14, cache size = 10 [CONTEXT service_id=132 ]
+09-19 17:16:58.883  1081  2058 I FontLog : Pulling font file for id = 14, cache size = 10 [CONTEXT service_id=132 ]
+09-19 17:16:58.907   478  3365 W IPCThreadState: Sending oneway calls to frozen process.
+09-19 17:16:58.907   849   945 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@206cd45
+09-19 17:16:58.907   594  1679 D CoreBackPreview: Window{4ff1ed4 u0 Splash Screen example.livematch.android EXITING}: Setting back callback null
+09-19 17:16:58.907   594   999 W InputManager-JNI: Input channel object '4ff1ed4 Splash Screen example.livematch.android (client)' was disposed without first being removed with the input manager!
+09-19 17:16:58.933  1503  2423 W A       : (REDACTED) [%s] response code: %d
+09-19 17:16:59.332  1533  1533 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.auth.service.START pkg=com.google.android.gms }
+09-19 17:16:59.372   594   710 D ActivityManager: freezing 2552 com.google.android.gms.unstable
+09-19 17:16:59.449  1376  1376 D WM-DelayedWorkTracker: Scheduling work bc6352cf-28dd-460f-aaf8-900c79717791
+09-19 17:16:59.449  1376  1376 D WM-GreedyScheduler: Starting tracking for bc6352cf-28dd-460f-aaf8-900c79717791
+09-19 17:16:59.450  1376  1599 D WM-ConstraintTracker: BatteryNotLowTracker: initial state = true
+09-19 17:16:59.450  1376  1599 D WM-BrdcstRcvrCnstrntTrc: BatteryNotLowTracker: registering receiver
+09-19 17:16:59.451  1376  1599 D WM-GreedyScheduler: Constraints met: Scheduling work ID WorkGenerationalId(workSpecId=bc6352cf-28dd-460f-aaf8-900c79717791, generation=0)
+09-19 17:16:59.451  1376  1599 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=bc6352cf-28dd-460f-aaf8-900c79717791, generation=0)
+09-19 17:16:59.452  1376  1376 D WM-WorkerWrapper: Starting work for com.android.providers.media.photopicker.sync.ProactiveSyncWorker
+09-19 17:16:59.452  1376  3956 I PSyncWorker: Starting proactive picker sync from sync source: 1
+09-19 17:16:59.452  1376  3956 I PickerSyncTracker: Created new sync future java.util.concurrent.CompletableFuture@65ce402[Not completed, 1 dependents]. Future map: {bc6352cf-28dd-460f-aaf8-900c79717791=java.util.concurrent.CompletableFuture@65ce402[Not completed, 1 dependents]}
+09-19 17:16:59.453  1376  3956 D PickerSyncController: syncAllMediaFromProvider() LOCAL, auth=com.android.providers.media.photopicker, retry=true
+09-19 17:16:59.453  1376  3956 D PickerSyncController: getSyncRequestParams() LOCAL, auth=com.android.providers.media.photopicker
+09-19 17:16:59.453  1376  3956 D PickerSyncController:    Latest ID/Gen=1409:c86a6c5b-d3b9-4bbe-8913-643b6162831e:external_primary/422
+09-19 17:16:59.453  1376  3956 D PickerSyncController:    Cached ID/Gen=1409:c86a6c5b-d3b9-4bbe-8913-643b6162831e:external_primary/414
+09-19 17:16:59.453  1376  3956 D PickerSyncController:    RESULT=SyncRequestParams{type=MEDIA_INCREMENTAL, gen=414, latest=Bundle[{last_media_sync_generation=422, media_collection_id=1409:c86a6c5b-d3b9-4bbe-8913-643b6162831e:external_primary}], pageSize=1000}
+09-19 17:16:59.453  1376  3956 I PickerSyncController: Executing SyncAdd. isLocal: true. authority: com.android.providers.media.photopicker
+09-19 17:16:59.453  1376  3956 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+09-19 17:16:59.453  1376  3956 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Locked by thread pool-3-thread-2]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+09-19 17:16:59.453  1376  3956 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+09-19 17:16:59.453  1376  3956 D ExternalDbFacade: Token received for queryMedia = null
+09-19 17:16:59.456  1376  3956 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+09-19 17:16:59.456  1376  3956 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Locked by thread pool-3-thread-2]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+09-19 17:16:59.456  1376  3956 D PickerSyncController: Saving next page token: 1789849017000|1000000146 for key: local_provider:media_add:resume
+09-19 17:16:59.456  1376  3956 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+09-19 17:16:59.456  1376  3956 D PickerNotificationSender: Sending a notification for media update
+09-19 17:16:59.456  1376  3956 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+09-19 17:16:59.456  1376  3956 D PickerNotificationSender: Sending a notification for album media update Favorites
+09-19 17:16:59.457  1376  3956 D PickerNotificationSender: Sending a notification for merged album media update Videos
+09-19 17:16:59.457  1376  3956 D PickerNotificationSender: Sending a notification for album media update Videos
+09-19 17:16:59.457  1376  3956 D ExternalDbFacade: Token received for queryMedia = 1789849017000|1000000146
+09-19 17:16:59.457  1376  3956 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+09-19 17:16:59.457  1376  3956 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Locked by thread pool-3-thread-2]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+09-19 17:16:59.457  1376  3956 D PickerSyncController: Clearing next page token for key: local_provider:media_add:resume
+09-19 17:16:59.457  1376  3956 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+09-19 17:16:59.457  1376  3956 D PickerNotificationSender: Sending a notification for media update
+09-19 17:16:59.458  1376  3956 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+09-19 17:16:59.458  1376  3956 D PickerNotificationSender: Sending a notification for album media update Favorites
+09-19 17:16:59.458  1376  3956 D PickerNotificationSender: Sending a notification for merged album media update Videos
+09-19 17:16:59.458  1376  3956 D PickerNotificationSender: Sending a notification for album media update Videos
+09-19 17:16:59.458  1376  3956 I PickerSyncController: Paged sync successful. QueryArgs: Bundle[{android.provider.extra.PAGE_TOKEN=1789849017000|1000000146, android.provider.extra.SYNC_GENERATION=414, android.provider.extra.PAGE_SIZE=1000}] Total Rows: 1
+09-19 17:16:59.458  1376  3956 I PickerSyncController: Executing SyncRemove. isLocal: true. authority: com.android.providers.media.photopicker
+09-19 17:16:59.458  1376  3956 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+09-19 17:16:59.458  1376  3956 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Locked by thread pool-3-thread-2]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+09-19 17:16:59.458  1376  3956 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+09-19 17:16:59.458  1376  3956 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+09-19 17:16:59.458  1376  3956 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Locked by thread pool-3-thread-2]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+09-19 17:16:59.458  1376  3956 D PickerSyncController: Clearing next page token for key: local_provider:media_remove:resume
+09-19 17:16:59.458  1376  3956 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@eb7c29c[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+09-19 17:16:59.458  1376  3956 D PickerNotificationSender: Sending a notification for media update
+09-19 17:16:59.459  1376  3956 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+09-19 17:16:59.459  1376  3956 D PickerNotificationSender: Sending a notification for album media update Favorites
+09-19 17:16:59.459  1376  3956 D PickerNotificationSender: Sending a notification for merged album media update Videos
+09-19 17:16:59.459  1376  3956 D PickerNotificationSender: Sending a notification for album media update Videos
+09-19 17:16:59.459  1376  3956 I PickerSyncController: Paged sync successful. QueryArgs: Bundle[{android.provider.extra.PAGE_TOKEN=1789849017000|1000000146, android.provider.extra.SYNC_GENERATION=414, android.provider.extra.PAGE_SIZE=1000}] Total Rows: 0
+09-19 17:16:59.460  1376  3956 I PickerSyncTracker: Marked sync future complete for work id: bc6352cf-28dd-460f-aaf8-900c79717791. Future map: {}
+09-19 17:16:59.460  1376  3956 I PSyncWorker: Completed picker proactive sync complete from local provider.
+09-19 17:16:59.460  1376  1599 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=bc6352cf-28dd-460f-aaf8-900c79717791, tags={ com.android.providers.media.photopicker.sync.ProactiveSyncWorker } ]
+09-19 17:16:59.460  1376  1376 D WM-Processor: Processor bc6352cf-28dd-460f-aaf8-900c79717791 executed; reschedule = false
+09-19 17:16:59.460  1376  1376 D WM-GreedyScheduler: Stopping tracking for WorkGenerationalId(workSpecId=bc6352cf-28dd-460f-aaf8-900c79717791, generation=0)
+09-19 17:16:59.461  1376  1599 D WM-GreedyScheduler: Cancelling work ID bc6352cf-28dd-460f-aaf8-900c79717791
+09-19 17:16:59.462  1376  1599 D WM-GreedyScheduler: Ignoring {WorkSpec: 8189539b-1e3e-4c4a-b75d-e6f46a8bd139}. Requires device idle.
+09-19 17:16:59.462  1376  1599 D WM-GreedyScheduler: Ignoring {WorkSpec: cf7b6eea-9ee2-45c6-b11c-9c00a972821a}. Requires device idle.
+09-19 17:16:59.462  1376  1599 D WM-BrdcstRcvrCnstrntTrc: BatteryNotLowTracker: unregistering receiver
+09-19 17:16:59.908   594  1416 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+09-19 17:17:00.007  1371  1603 I AiAiEcho: Predicting[0]:  [CONTEXT sampling_count=5 ]
+09-19 17:17:00.007  1371  1603 I AiAiEcho: EchoTargets: 
+09-19 17:17:00.007  1371  1603 I AiAiEcho: Filtered by AiAi flag check: 
+09-19 17:17:00.007  1371  1603 I AiAiEcho: [CONTEXT ratelimit_period="10 SECONDS" ]
+09-19 17:17:00.007  1371  1603 I AiAiEcho: Ranked targets strategy: SORT, count: 0, ranking metadata:  [CONTEXT ratelimit_period="10 SECONDS" ]
+09-19 17:17:00.008  1371  1603 I AiAiEcho: #remoteViewsTwiddler: feature disabled.
+09-19 17:17:00.008  1371  1603 I AiAiEcho: Predicting[0]:  [CONTEXT sampling_count=5 ]
+09-19 17:17:00.008  1371  1603 I AiAiEcho: EchoTargets: 
+09-19 17:17:00.008  1371  1603 I AiAiEcho: Filtered by AiAi flag check: 
+09-19 17:17:00.008  1371  1603 I AiAiEcho: [CONTEXT ratelimit_period="10 SECONDS" ]
+09-19 17:17:00.008  1371  1603 I AiAiEcho: Ranked targets strategy: SORT, count: 0, ranking metadata:  [CONTEXT ratelimit_period="10 SECONDS" ]
+09-19 17:17:00.008  1371  1603 I AiAiEcho: #remoteViewsTwiddler: feature disabled.
+09-19 17:17:00.008  1371  1603 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+09-19 17:17:00.009  1371  1603 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+09-19 17:17:00.009  1167  1167 D SsBaseTemplateCard: No text view can be set up
+09-19 17:17:00.009  1167  1167 D SsBaseTemplateCard: Passed-in item info is null
+09-19 17:17:00.009  1167  1167 D SsBaseTemplateCard: Passed-in item info is null
+09-19 17:17:00.009  1167  1167 D SsBaseTemplateCard: Passed-in item info is null
+09-19 17:17:00.009  1167  1167 I SsBaseTemplateCard: Secondary card pane is null
+09-19 17:17:00.024   849   849 W PageIndicator: Total number of pages invalid: 0. Assuming 1 page.
+09-19 17:17:00.027   849  1055 D EGL_emulation: app_time_stats: avg=43594.95ms min=43594.95ms max=43594.95ms count=1
+09-19 17:17:00.605  3957  3957 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+09-19 17:17:00.606  3957  3957 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+09-19 17:17:00.613   164   164 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+09-19 17:17:00.613  3957  3959 I Gralloc4: mapper 4.x is not supported
+09-19 17:17:00.615   163   163 I servicemanager: Caller(pid=3957,uid=2000,sid=u:r:shell:s0) Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest. No alternative instances declared in VINTF.
+09-19 17:17:00.619  1376  1693 W MediaProvider: isAppCloneUserPair for user 0: false
+09-19 17:17:00.628   594  1679 D OomAdjuster: Not killing cached processes
+09-19 17:17:00.629  1081  3727 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.ipa.base.IpaGcmTaskService started execution. cause:9 exec_start_elapsed_seconds: 140 [CONTEXT service_id=218 ]
+09-19 17:17:00.635  1081  3812 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.ipa.base.IpaGcmTaskService finished executing. cause:9 result: 1 elapsed_millis: 4 uptime_millis: 4 exec_start_elapsed_seconds: 140 [CONTEXT service_id=218 ]
+09-19 17:17:00.668   594  1679 I ActivityManager: Broadcasting: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }
+09-19 17:17:00.668   594  1679 I ActivityManager: Enqueued broadcast Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }: 0
+09-19 17:17:00.669   594   999 W JobInfo : Job 'com.google.android.providers.media.module/com.android.providers.media.MediaService#-300' has a deadline with no functional constraints. The deadline won't improve job execution latency. Consider removing the deadline.
+09-19 17:17:00.670   594   635 I ActivityManager: Broadcast completed: result=0
+09-19 17:17:00.670  1376  1894 I MediaProvider: Begin Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaService }
+09-19 17:17:00.672  1376  1894 I MediaProvider: End Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaService }
+09-19 17:17:00.680  1376  1558 D WM-SystemJobScheduler: Scheduling work ID 440483ad-5c76-4698-aefc-926595856e5bJob ID 13
+09-19 17:17:00.681  1376  1558 D WM-GreedyScheduler: Ignoring {WorkSpec: 8189539b-1e3e-4c4a-b75d-e6f46a8bd139}. Requires device idle.
+09-19 17:17:00.681  1376  1558 D WM-GreedyScheduler: Ignoring {WorkSpec: cf7b6eea-9ee2-45c6-b11c-9c00a972821a}. Requires device idle.
+09-19 17:17:00.686  1081  3910 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.ipa.base.IpaGcmTaskService started execution. cause:9 exec_start_elapsed_seconds: 140 [CONTEXT service_id=218 ]
+09-19 17:17:00.687  1081  3727 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.ipa.base.IpaGcmTaskService finished executing. cause:9 result: 1 elapsed_millis: 4 uptime_millis: 4 exec_start_elapsed_seconds: 140 [CONTEXT service_id=218 ]

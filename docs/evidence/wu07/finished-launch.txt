@@ -1,0 +1,7 @@
+Starting: Intent { cmp=example.livematch.android/.DiagnosticPlaybackActivity (has extras) }
+Status: ok
+LaunchState: COLD
+Activity: example.livematch.android/.DiagnosticPlaybackActivity
+TotalTime: 397
+WaitTime: 398
+Complete

@@ -1,0 +1,14 @@
+$ adb -s emulator-5556 shell wm size
+Physical size: 1080x2424
+$ adb -s emulator-5556 logcat -c
+$ adb -s emulator-5556 shell am force-stop example.livematch.android
+$ adb -s emulator-5556 shell am start -W -n example.livematch.android/.DiagnosticPlaybackActivity --es mode post_attach --es fixture paint-probe.rc
+Starting: Intent { cmp=example.livematch.android/.DiagnosticPlaybackActivity (has extras) }
+Status: ok
+LaunchState: COLD
+Activity: example.livematch.android/.DiagnosticPlaybackActivity
+TotalTime: 199
+WaitTime: 200
+Complete
+$ adb -s emulator-5556 shell pidof example.livematch.android
+29613
