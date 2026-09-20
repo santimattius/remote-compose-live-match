@@ -1,0 +1,7 @@
+Starting: Intent { cmp=example.livematch.android/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: example.livematch.android/.MainActivity
+TotalTime: 442
+WaitTime: 443
+Complete

@@ -2,6 +2,7 @@ package example.livematch.creator
 
 import androidx.compose.remote.creation.JvmRcPlatformServices
 import androidx.compose.remote.creation.RemoteComposeWriter
+import example.livematch.contract.ActionId
 import example.livematch.contract.CreatorMetadata
 import example.livematch.contract.PayloadEnvelope
 import example.livematch.contract.RemoteDocumentPayload
@@ -25,6 +26,19 @@ class ProceduralJvmMatchDocumentCreator : ScheduledMatchDocumentCreator {
                 drawTextAnchored(request.match.homeTeam, PADDING_X, 100f, -1f, 0f, 0)
                 drawTextAnchored(request.match.awayTeam, PADDING_X, 210f, -1f, 0f, 0)
                 drawTextAnchored(request.match.scheduledEpochMillis.toString(), PADDING_X, 320f, -1f, 0f, 0)
+                getRcPaint().setColor(BUTTON_COLOR).setAntiAlias(true).commit()
+                drawRect(PADDING_X, BUTTON_TOP, BUTTON_RIGHT, BUTTON_BOTTOM)
+                getRcPaint().setColor(TEXT_COLOR).setTextSize(TEXT_SIZE).setAntiAlias(true).commit()
+                drawTextAnchored("Remind me", PADDING_X + BUTTON_TEXT_INSET, BUTTON_TOP + BUTTON_TEXT_INSET * 2f, -1f, 0f, 0)
+                addClickArea(
+                    nextId(),
+                    "Set reminder",
+                    PADDING_X,
+                    BUTTON_TOP,
+                    BUTTON_RIGHT,
+                    BUTTON_BOTTOM,
+                    ActionId.SET_REMINDER.wireValue,
+                )
             }
         val payload =
             RemoteDocumentPayload.from(
@@ -58,5 +72,10 @@ class ProceduralJvmMatchDocumentCreator : ScheduledMatchDocumentCreator {
         const val TEXT_COLOR = 0xFFFFFFFF.toInt()
         const val TEXT_SIZE = 48f
         const val PADDING_X = 48f
+        const val BUTTON_COLOR = 0xFF3E8ED0.toInt()
+        const val BUTTON_TOP = 380f
+        const val BUTTON_BOTTOM = 460f
+        const val BUTTON_RIGHT = 600f
+        const val BUTTON_TEXT_INSET = 16f
     }
 }

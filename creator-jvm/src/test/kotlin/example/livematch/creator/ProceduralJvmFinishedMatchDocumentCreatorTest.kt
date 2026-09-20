@@ -65,6 +65,19 @@ class ProceduralJvmFinishedMatchDocumentCreatorTest {
         assertTrue(bytes.containsFloatLiteral(TEXT_SIZE), "expected an explicit larger text size for the full-width viewport")
     }
 
+    @Test
+    fun finishedDocumentAuthorsARealOpenSummaryClickArea() {
+        val creator = ProceduralJvmFinishedMatchDocumentCreator()
+        val bytes = creator.create(request).payload.bytes
+
+        assertTrue(
+            bytes.containsAsciiLiteral(OPEN_SUMMARY_WIRE_VALUE),
+            "expected the open_summary action's wire value to be authored as a click-area metadata string",
+        )
+    }
+
+    private fun ByteArray.containsAsciiLiteral(text: String): Boolean = indexOf(text.toByteArray(Charsets.US_ASCII)) >= 0
+
     private fun ByteArray.containsColorLiteral(color: Int): Boolean {
         val bigEndian = byteArrayOf((color shr 24).toByte(), (color shr 16).toByte(), (color shr 8).toByte(), color.toByte())
         val littleEndian = bigEndian.reversedArray()
@@ -93,5 +106,6 @@ class ProceduralJvmFinishedMatchDocumentCreatorTest {
         const val TEXT_COLOR = 0xFFFFFFFF.toInt()
         const val LEFT_ANCHOR_PAN_X = -1.0f
         const val TEXT_SIZE = 48.0f
+        const val OPEN_SUMMARY_WIRE_VALUE = "open_summary"
     }
 }

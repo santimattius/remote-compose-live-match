@@ -2,6 +2,50 @@
 
 Dependency is pre-1.0 (`androidx.compose.remote`, currently pinned at `1.0.0-alpha19`). This log tracks concrete, evidence-backed gotchas and non-obvious behaviors found while integrating it, so later work doesn't re-discover the same surprises. Each entry is dated and links to the evidence that backs it. Keep entries short; full detail lives in `docs/evidence/`.
 
+## 2026-09-20 — Loading a document `post_attach` registers click areas but never materializes their `ClickAreaView` children; load `pre_attach`-style for interactive documents (WU10)
+
+Extending WU9's `open_match`/`open_highlight`/`open_summary` buttons to the Live and Finished
+documents initially showed **zero** `ClickAreaView` children on-device even though the byte-level
+click-area data was present and correctly encoded (verified two independent ways). Reflection on
+the live view tree (`RemoteComposeView.mDocument.getDocument().getClickAreas()`) confirmed the
+click areas ARE registered at the document-model level (2 for Live, 1 for Finished, matching what
+was authored) — but `RemoteComposeView`'s child count was `0` in both cases when the document was
+loaded via `DiagnosticPlaybackActivity`'s `MODE_POST_ATTACH` path (`player.post { load(...) }`,
+i.e. loading a document into a player that has already gone through at least one attach/layout
+pass with no document). Switching to `MODE_PRE_ATTACH` (load synchronously before the view is
+returned from the `AndroidView` factory — the same timing `MainActivity` already uses in
+production) made the `ClickAreaView`s materialize correctly (child count 2 and 1, taps fire).
+**Takeaway:** `updateClickAreas()`'s child-view creation appears to run during initial
+attach/layout, not on every `setDocument()` call — swapping in a new document with click areas
+*after* that point does not retroactively create their `ClickAreaView`s. This doesn't affect
+`MainActivity` (always loads before attach) but is a real constraint on any future "swap the live
+document mid-session" flow (e.g. Scheduled → Live transition) — that will need to be tested
+explicitly, not assumed to work, once that flow exists. See `docs/evidence/wu10-live-finished-actions.md`.
+
+## 2026-09-20 — `uiautomator dump` does not reliably show `ClickAreaView`; use reflection on the live view tree instead, and watch listener-registration order around `setDocument` (WU9)
+
+WU8's "click delivery is broken, maybe needs a component/modifier DSL" hypothesis (below) was
+**wrong**. The real defect: `RemoteComposePlayer.addIdActionListener(...)` registers directly
+onto whichever `CoreDocument` instance the internal `RemoteComposeView.mDocument` currently
+points to — with no deferral. `RemoteComposePlayer.setDocument(bytes)` **replaces** that
+`CoreDocument` instance. Calling `addIdActionListener` before `setDocument` (this project's
+original order) attaches the listener to a document that's about to be discarded; the live
+document that the tap is actually evaluated against ends up with an empty listener set, so the
+tap is silently swallowed with no crash, no log, nothing. **Fix: always call
+`addIdActionListener` after `setDocument`/`load`, never before.** Separately: WU8's
+`uiautomator dump` showing zero children under the player was a red herring — `uiautomator`
+walks the **accessibility** tree, and `ClickAreaView` isn't exposed there even when it's a real,
+correctly-bounded, clickable child of the live View tree (confirmed by reflecting on
+`player`'s private `mInner`/`ClickAreaView` fields). **Takeaway:** when diagnosing whether a
+View got created/attached, prefer reflection on the actual object graph (or a debug-only
+accessor) over `uiautomator dump`, which can under-report. See
+`docs/evidence/wu09-click-area-root-cause.md`.
+
+## RESOLVED (WU9) — `RemoteComposeWriter.addClickArea` + `RemoteComposePlayer.addIdActionListener` exist and are wired in the player's source, but never fired for this project's immediate-mode authoring style (WU8)
+
+**Resolved 2026-09-20 in WU9** — see the entry directly above. Both halves of a real
+action-dispatch API are public: `RemoteComposeWriter.addClickArea(id, contentDescription, left, top, right, bottom, metadata)` on the creation side, and `RemoteComposePlayer.addIdActionListener(IdActionCallbacks)` (`onAction(int, String)`) on the player side, connected internally through `RemoteComposeView.updateClickAreas()` reading `CoreDocument.getClickAreas()` and materializing a real `ClickAreaView` child per click area. Authoring a click area against a bare `RemoteComposeWriter.apply { drawRect(...); addClickArea(...) }` sequence (this project's style since WU1, no component/layout tree) works fine — WU8 mistook a host-side listener-ordering bug plus an accessibility-tree blind spot for a library/authoring-style limitation. The originally-floated hypothesis that `remote-creation-core`'s component/modifier DSL (`ClickActionModifier`, `TouchActionModifier`, `RcActionScope`) would be required was investigated and **ruled out** — it was never the cause. See `docs/evidence/wu08-action-allowlist.md` (original investigation) and `docs/evidence/wu09-click-area-root-cause.md` (root cause and fix).
+
 ## 2026-09-19 — `RemoteComposePlayer` has no scale-to-fit; procedurally-drawn absolute pixel coordinates never adapt to the real device size (WU7)
 
 Decompiled the alpha19 `remote-player-view` runtime (`javap -p`, no sources jar): `RemoteComposePlayer`'s full public surface has no scale/fit/content-scale API, and `RemoteComposeView.onDraw` sets the `RemoteContext`'s width/height to the *view's* actual measured size (which is already full-screen, since our hosts use `AndroidView(Modifier.fillMaxSize())`) but calls `RemoteDocument.paint(...)` with no `canvas.scale(...)` anywhere in the path. A document authored with raw `drawRect`/`drawTextAnchored` absolute pixel coordinates (this project's procedural style — not the library's relative/fill-based layout-component DSL) is drawn 1:1 into that bigger canvas: it does **not** stretch to fill it. A small declared `Viewport` (e.g. the original `320x180`) therefore renders as a small box in the corner of any larger screen, regardless of how the host view is sized — this looks like a layout bug but is actually just literal pixel coordinates on a bigger canvas. **Takeaway:** for this procedural/absolute-coordinate authoring style, the `Viewport` dimensions ARE the real on-screen pixel size — choose them to match the target device class (this project now uses `1080x480`, matching the Pixel_9's physical width), don't treat them as an abstract "design size" the player will scale up. Revisit if a future work unit switches to the library's relative-layout DSL, which may consult the context's actual width/height differently. See `docs/evidence/wu07-viewport-sizing-fix.md`.

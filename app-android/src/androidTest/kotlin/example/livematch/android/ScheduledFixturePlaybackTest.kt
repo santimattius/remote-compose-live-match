@@ -56,6 +56,6 @@ class ScheduledFixturePlaybackTest {
 
     private companion object {
         const val FIXTURE_NAME = "scheduled-match.rc"
-        const val EXPECTED_SHA256 = "d46ee2a7cecb25dcb4f24e2c3cbd3bfa5d491fa8034f838437f45252fb370623"
+        const val EXPECTED_SHA256 = "2f84de7c0163431ba53523d07371e67826864312f7ddd3e14e3df247d7406ff4"
     }
 }

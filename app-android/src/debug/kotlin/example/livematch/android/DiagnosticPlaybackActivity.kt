@@ -1,6 +1,7 @@
 package example.livematch.android
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.WindowInsets
@@ -12,6 +13,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.remote.player.view.RemoteComposePlayer
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import example.livematch.contract.ActionAllowlist
+import example.livematch.contract.ActionId
+import example.livematch.contract.MatchPhase
 import example.livematch.contract.RemoteDocumentPayload
 
 class DiagnosticPlaybackActivity : ComponentActivity() {
@@ -46,7 +50,32 @@ class DiagnosticPlaybackActivity : ComponentActivity() {
         fixture: String,
     ) {
         val bytes = assets.open(fixture).use { it.readBytes() }
+        // Must register after setDocument, not before: see MainActivity's addIdActionListener
+        // comment / docs/evidence/wu09-click-area-root-cause.md.
         RemoteComposePlayerAdapter().load(player, RemoteDocumentPayload.from(bytes, bytes.size))
+        val phase = PHASE_BY_FIXTURE[fixture]
+        if (phase != null) {
+            player.addIdActionListener { _, metadata -> onDocumentAction(phase, metadata) }
+        }
+    }
+
+    /** Exposed for instrumentation tests to observe dispatch outcomes without parsing logcat. */
+    internal var lastDispatchedAction: ActionId? = null
+        private set
+
+    private fun onDocumentAction(
+        phase: MatchPhase,
+        wireValue: String?,
+    ) {
+        val actionId = wireValue?.let(ActionId::fromWireValue)
+        when {
+            actionId == null -> Log.w(TAG, "Ignoring unknown action id: $wireValue")
+            ActionAllowlist.isAllowed(phase, actionId) -> {
+                lastDispatchedAction = actionId
+                Log.i(TAG, "Accepted action: ${actionId.wireValue}")
+            }
+            else -> Log.w(TAG, "Rejected action not allowed in $phase: ${actionId.wireValue}")
+        }
     }
 
     companion object {
@@ -58,12 +87,18 @@ class DiagnosticPlaybackActivity : ComponentActivity() {
         const val ALPHA18_API6_CONTROL_FIXTURE_NAME = "alpha18-api6-control.rc"
         const val LIVE_MATCH_FIXTURE_NAME = "live-match.rc"
         const val FINISHED_MATCH_FIXTURE_NAME = "finished-match.rc"
+        private const val TAG = "DiagnosticPlayback"
         private val DIAGNOSTIC_FIXTURE_NAMES =
             setOf(
                 PAINT_PROBE_FIXTURE_NAME,
                 ALPHA18_API6_CONTROL_FIXTURE_NAME,
                 LIVE_MATCH_FIXTURE_NAME,
                 FINISHED_MATCH_FIXTURE_NAME,
+            )
+        private val PHASE_BY_FIXTURE =
+            mapOf(
+                LIVE_MATCH_FIXTURE_NAME to MatchPhase.LIVE,
+                FINISHED_MATCH_FIXTURE_NAME to MatchPhase.FINISHED,
             )
     }
 }

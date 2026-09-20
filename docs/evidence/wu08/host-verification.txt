@@ -1,0 +1,15 @@
+> Task :app-android:mergeDebugNativeLibs UP-TO-DATE
+> Task :app-android:stripDebugDebugSymbols UP-TO-DATE
+> Task :app-android:validateSigningDebug UP-TO-DATE
+> Task :app-android:writeDebugAppMetadata UP-TO-DATE
+> Task :app-android:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :app-android:mergeProjectDexDebug
+> Task :app-android:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :app-android:mergeLibDexDebug
+> Task :app-android:mergeDebugJavaResource
+> Task :app-android:packageDebug
+> Task :app-android:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :app-android:assembleDebug
+
+BUILD SUCCESSFUL in 6s
+39 actionable tasks: 7 executed, 32 up-to-date

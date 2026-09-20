@@ -30,7 +30,7 @@ object LiveFixtureGenerator {
     private fun request() =
         LiveMatchRequest(
             LiveMatch("live-2027-01", "Orcas", "Tigers", 2, 1, "2nd Half", "67:12"),
-            Viewport(1080, 480),
+            Viewport(1080, 600),
             "en-US",
             Theme.DARK,
             1_700_000_000_000,

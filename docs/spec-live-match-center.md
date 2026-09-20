@@ -419,7 +419,7 @@ No se publicarán porcentajes comparativos hasta que el código, dispositivo, ve
 
 | Tesis o sección del artículo | Evidencia exigida en el ejemplo | Estado |
 | --- | --- | --- |
-| Bytes de entrada, acciones de salida | Envelope + dispatcher con allowlist | Pendiente |
+| Bytes de entrada, acciones de salida | Envelope + dispatcher con allowlist | Parcial (WU10): allowlist de host implementada y testeada, y entrega end-to-end confirmada con taps reales en dispositivo para `set_reminder` (Scheduled, WU9), `open_match`/`open_highlight` (Live) y `open_summary` (Finished) (ver `docs/evidence/wu10-live-finished-actions.md`). Pendiente: envelope firmado, `refresh` (fase Suspended, aún no existe), y el efecto de dominio real detrás de cada acción |
 | Creación JVM | Tarea que genera fixtures sin Android SDK | Hecho para Scheduled/Live/Finished (`generate*Fixture`/`check*Fixture`, WU2/WU4/WU5); Cancelled/Suspended pendientes |
 | Expresiones locales | Reloj o pulso sin polling de red | Pendiente |
 | Resiliencia | Caché y fallback ante payload inválido | Pendiente |

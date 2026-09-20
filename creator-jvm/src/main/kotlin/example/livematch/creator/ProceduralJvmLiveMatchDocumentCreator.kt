@@ -2,6 +2,7 @@ package example.livematch.creator
 
 import androidx.compose.remote.creation.JvmRcPlatformServices
 import androidx.compose.remote.creation.RemoteComposeWriter
+import example.livematch.contract.ActionId
 import example.livematch.contract.CreatorMetadata
 import example.livematch.contract.LiveMatchDocument
 import example.livematch.contract.LiveMatchDocumentCreator
@@ -26,6 +27,30 @@ class ProceduralJvmLiveMatchDocumentCreator : LiveMatchDocumentCreator {
                 drawTextAnchored(homeLine(request), PADDING_X, 190f, -1f, 0f, 0)
                 drawTextAnchored(awayLine(request), PADDING_X, 290f, -1f, 0f, 0)
                 drawTextAnchored(periodAndClock(request), PADDING_X, 390f, -1f, 0f, 0)
+                getRcPaint().setColor(BUTTON_COLOR).setAntiAlias(true).commit()
+                drawRect(MATCH_BUTTON_LEFT, BUTTON_TOP, MATCH_BUTTON_RIGHT, BUTTON_BOTTOM)
+                drawRect(HIGHLIGHT_BUTTON_LEFT, BUTTON_TOP, HIGHLIGHT_BUTTON_RIGHT, BUTTON_BOTTOM)
+                getRcPaint().setColor(TEXT_COLOR).setTextSize(TEXT_SIZE).setAntiAlias(true).commit()
+                drawTextAnchored("Match", MATCH_BUTTON_LEFT + BUTTON_TEXT_INSET, BUTTON_TOP + BUTTON_TEXT_INSET * 2f, -1f, 0f, 0)
+                drawTextAnchored("Highlight", HIGHLIGHT_BUTTON_LEFT + BUTTON_TEXT_INSET, BUTTON_TOP + BUTTON_TEXT_INSET * 2f, -1f, 0f, 0)
+                addClickArea(
+                    nextId(),
+                    "Open match",
+                    MATCH_BUTTON_LEFT,
+                    BUTTON_TOP,
+                    MATCH_BUTTON_RIGHT,
+                    BUTTON_BOTTOM,
+                    ActionId.OPEN_MATCH.wireValue,
+                )
+                addClickArea(
+                    nextId(),
+                    "Open highlight",
+                    HIGHLIGHT_BUTTON_LEFT,
+                    BUTTON_TOP,
+                    HIGHLIGHT_BUTTON_RIGHT,
+                    BUTTON_BOTTOM,
+                    ActionId.OPEN_HIGHLIGHT.wireValue,
+                )
             }
         val payload =
             RemoteDocumentPayload.from(
@@ -70,5 +95,13 @@ class ProceduralJvmLiveMatchDocumentCreator : LiveMatchDocumentCreator {
         const val TEXT_COLOR = 0xFFFFFFFF.toInt()
         const val TEXT_SIZE = 48f
         const val PADDING_X = 48f
+        const val BUTTON_COLOR = 0xFF3E8ED0.toInt()
+        const val BUTTON_TOP = 450f
+        const val BUTTON_BOTTOM = 530f
+        const val BUTTON_TEXT_INSET = 16f
+        const val MATCH_BUTTON_LEFT = PADDING_X
+        const val MATCH_BUTTON_RIGHT = 528f
+        const val HIGHLIGHT_BUTTON_LEFT = 552f
+        const val HIGHLIGHT_BUTTON_RIGHT = 1032f
     }
 }

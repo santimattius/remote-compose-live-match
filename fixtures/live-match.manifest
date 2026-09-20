@@ -1,8 +1,8 @@
 creator=procedural-jvm-live-match
 version=1
-viewport=1080x480
+viewport=1080x600
 locale=en-US
 theme=DARK
 generationEpochMillis=1700000000000
-sha256=2066bb73c4d959b2cca5fb5f3061a28d735f86bcb27a589127e1df864ebcde02
+sha256=bdf280c864792c39108dcd094e67047a689e038cdb5ef2f7711d331c7a71d6b5
 signingBoundary=EXTERNAL_SIGNATURE_REQUIRED

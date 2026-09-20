@@ -1,0 +1,9 @@
+$ adb -s emulator-5554 shell getprop ro.build.version.release
+15
+$ adb -s emulator-5554 shell getprop ro.build.version.sdk
+35
+$ adb -s emulator-5554 shell getprop ro.build.fingerprint
+google/sdk_gphone64_arm64/emu64a:15/AE3A.240806.043/12960925:userdebug/dev-keys
+$ adb -s emulator-5554 emu avd name
+Pixel_9
+OK
