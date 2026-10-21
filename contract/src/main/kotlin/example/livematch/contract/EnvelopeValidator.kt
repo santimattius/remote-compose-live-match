@@ -12,6 +12,9 @@ enum class EnvelopeRejectionReason {
     INVALID_SIGNATURE,
 }
 
+typealias EnvelopeSignatureVerifier =
+    (signedBytes: ByteArray, signatureBase64: String, publicKeyBase64: String) -> Boolean
+
 sealed class EnvelopeValidationResult {
     object Valid : EnvelopeValidationResult()
 
@@ -38,6 +41,7 @@ object EnvelopeValidator {
         nowEpochSeconds: Long,
         currentHostVersion: Int = CURRENT_HOST_VERSION,
         publicKeyBase64: String = EnvelopePublicKey.PRODUCTION_PUBLIC_KEY_BASE64,
+        signatureVerifier: EnvelopeSignatureVerifier = EnvelopePublicKey::verify,
     ): EnvelopeValidationResult {
         if (envelope.bytes.size > MAX_ENVELOPE_BYTES) {
             return EnvelopeValidationResult.Rejected(EnvelopeRejectionReason.OVERSIZED)
@@ -60,7 +64,13 @@ object EnvelopeValidator {
         if (!envelope.contentSha256.equals(sha256Hex(envelope.bytes), ignoreCase = true)) {
             return EnvelopeValidationResult.Rejected(EnvelopeRejectionReason.HASH_MISMATCH)
         }
-        if (!EnvelopePublicKey.verify(envelope.canonicalSigningInput(), envelope.signature, publicKeyBase64)) {
+        if (
+            !signatureVerifier(
+                envelope.canonicalSigningInput(),
+                envelope.signature,
+                publicKeyBase64,
+            )
+        ) {
             return EnvelopeValidationResult.Rejected(EnvelopeRejectionReason.INVALID_SIGNATURE)
         }
         return EnvelopeValidationResult.Valid

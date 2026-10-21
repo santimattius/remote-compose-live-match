@@ -16,7 +16,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import example.livematch.contract.ActionAllowlist
 import example.livematch.contract.ActionId
 import example.livematch.contract.MatchPhase
-import example.livematch.contract.RemoteDocumentPayload
+import java.time.Instant
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,13 +36,19 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun loadScheduledFixture(player: RemoteComposePlayer) {
-        val bytes = assets.open(SCHEDULED_FIXTURE_NAME).use { it.readBytes() }
-        val document = RemoteDocumentPayload.from(bytes, bytes.size)
-        // Must register after setDocument: RemoteComposeView.addIdActionListener() attaches
-        // directly to the *current* CoreDocument instance, and setDocument() replaces it with
-        // a new one. Registering first orphans the listener on the discarded document (WU9).
-        RemoteComposePlayerAdapter().load(player, document)
-        player.addIdActionListener { _, metadata -> onDocumentAction(metadata) }
+        val encodedEnvelope = assets.open(SCHEDULED_FIXTURE_NAME).use { it.readBytes() }
+        val result =
+            EnvelopeDocumentLoader().load(encodedEnvelope, Instant.now().epochSecond) { document ->
+                RemoteComposePlayerAdapter().load(player, document)
+            }
+        if (result == EnvelopeLoadResult.Loaded) {
+            // Must register after setDocument: RemoteComposeView.addIdActionListener() attaches
+            // directly to the *current* CoreDocument instance, and setDocument() replaces it with
+            // a new one. Registering first orphans the listener on the discarded document (WU9).
+            player.addIdActionListener { _, metadata -> onDocumentAction(metadata) }
+        } else {
+            Log.w(TAG, "Rejected scheduled fixture envelope: $result")
+        }
     }
 
     /** Exposed for instrumentation tests to observe dispatch outcomes without parsing logcat. */
@@ -53,18 +59,24 @@ class MainActivity : ComponentActivity() {
     private fun onDocumentAction(wireValue: String?) {
         val actionId = wireValue?.let(ActionId::fromWireValue)
         when {
-            actionId == null -> Log.w(TAG, "Ignoring unknown action id: $wireValue")
+            actionId == null -> {
+                Log.w(TAG, "Ignoring unknown action id: $wireValue")
+            }
+
             ActionAllowlist.isAllowed(CURRENT_PHASE, actionId) -> {
                 lastDispatchedAction = actionId
                 Log.i(TAG, "Accepted action: ${actionId.wireValue}")
             }
-            else -> Log.w(TAG, "Rejected action not allowed in $CURRENT_PHASE: ${actionId.wireValue}")
+
+            else -> {
+                Log.w(TAG, "Rejected action not allowed in $CURRENT_PHASE: ${actionId.wireValue}")
+            }
         }
     }
 
     private companion object {
         const val TAG = "MainActivity"
-        const val SCHEDULED_FIXTURE_NAME = "scheduled-match.rc"
+        const val SCHEDULED_FIXTURE_NAME = "scheduled-match.rce"
         val CURRENT_PHASE = MatchPhase.SCHEDULED
     }
 }
