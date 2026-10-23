@@ -2,6 +2,17 @@
 
 Dependency is pre-1.0 (`androidx.compose.remote`, currently pinned at `1.0.0-alpha19`). This log tracks concrete, evidence-backed gotchas and non-obvious behaviors found while integrating it, so later work doesn't re-discover the same surprises. Each entry is dated and links to the evidence that backs it. Keep entries short; full detail lives in `docs/evidence/`.
 
+## 2026-09-20 — Remote Compose alpha19 has no built-in distribution/signing envelope; it's app-layer work (WU11)
+
+`remote-core`/`remote-creation-core`/`remote-player-view` only cover document encoding and
+on-device rendering — there is no library-provided concept of a signed envelope, schema version,
+expiration, or `minHostVersion` compatibility check. Spec section 6.2's `RemoteUiEnvelope` and
+section 9's validation list had to be built entirely with plain JDK APIs
+(`java.security.Signature`/`KeyFactory` with `Ed25519`, no external dependency) wrapping the raw
+`.rc` bytes, not anything the Remote Compose library itself exposes. Worth knowing before
+assuming any part of "validate before decode" is a library feature you can just call into — none
+of it is; see `docs/evidence/wu11-signed-envelope.md`.
+
 ## 2026-09-20 — Loading a document `post_attach` registers click areas but never materializes their `ClickAreaView` children; load `pre_attach`-style for interactive documents (WU10)
 
 Extending WU9's `open_match`/`open_highlight`/`open_summary` buttons to the Live and Finished
