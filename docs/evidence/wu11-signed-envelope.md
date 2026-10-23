@@ -57,3 +57,32 @@ Kotlin's synthesized `equals`/`hashCode` for a data class compares `ByteArray` f
 *reference*, not content — the same trap `RemoteDocumentPayload` in this codebase already avoids
 by being a plain class with a defensive-copy getter. `RemoteUiEnvelope` follows that existing,
 established precedent instead of the spec's literal syntax.
+
+## Validation checks implemented (spec section 9, subset)
+
+Implemented, in cheapest-first order (`EnvelopeValidator.validate`): oversized envelope, unknown
+schema version, incompatible `minHostVersion`, incoherent timestamps (`expiresAt <= createdAt`),
+expired (no cache to fall back to yet, so treated as outright rejection), content hash mismatch,
+invalid signature.
+
+**Explicitly deferred** (need the not-yet-built repository/cache layer): external-resource
+policy, `documentId`/`matchId`/`revision` cross-checks against prior state, and refresh/retry
+rate limits.
+
+## Strict-TDD evidence
+
+| Component | RED confirmed | GREEN confirmed |
+| --- | --- | --- |
+| `RemoteUiEnvelope` | `Unresolved reference 'RemoteUiEnvelope'` (compile failure) | `:contract:test` — 5/5 tests pass |
+| `EnvelopePublicKey` | `Unresolved reference 'EnvelopePublicKey'` | `:contract:test` — 5/5 tests pass |
+| `EnvelopeValidator`/`EnvelopeValidationResult`/`EnvelopeRejectionReason` | compile failure (all three unresolved) | `:contract:test` — 9/9 tests pass, one per spec-9 rejection reason plus the accept case and the tampered-payload case |
+| `EnvelopeSigner`/`EnvelopeMetadataInput`/`EnvelopeSigningKeyLoader` | `Unresolved reference 'EnvelopeSigner'` / `'EnvelopeSigningKeyLoader'` | `:creator-jvm:test` — 5/5 tests pass |
+| WU11 correction: canonical encoding and algorithm validation | `./gradlew :contract:test :creator-jvm:test --rerun-tasks` — `RemoteUiEnvelopeTest.canonicalSigningInput distinguishes field-boundary collision metadata` and `EnvelopeValidatorTest.rejects a signed envelope whose signature algorithm is changed to none` failed; build failed | `./gradlew :contract:test :creator-jvm:test --rerun-tasks` — both `:contract:test` and `:creator-jvm:test` passed; `BUILD SUCCESSFUL` (8 actionable tasks executed) |
+
+The correction replaces delimiter joining with length-prefixed encoding and rejects any
+`signatureAlgorithm` other than `Ed25519` as `INVALID_SIGNATURE` before hash/signature
+acceptance. The signer signs the same authenticated algorithm field.
+
+Full-suite regression check: `./gradlew test :app-android:testDebugUnitTest --no-daemon` —
+`BUILD SUCCESSFUL`, nothing broken by this change (it adds new files only; no existing production
+code was touched).
