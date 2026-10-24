@@ -4,6 +4,8 @@ import java.security.KeyPairGenerator
 import java.security.Signature
 import java.util.Base64
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -12,11 +14,12 @@ class EnvelopePublicKeyTest {
     fun `verifies a signature produced by the matching private key`() {
         val keyPair = KeyPairGenerator.getInstance(EnvelopePublicKey.ALGORITHM).generateKeyPair()
         val data = "canonical-input".toByteArray(Charsets.UTF_8)
-        val signature = Signature.getInstance(EnvelopePublicKey.ALGORITHM).run {
-            initSign(keyPair.private)
-            update(data)
-            Base64.getEncoder().encodeToString(sign())
-        }
+        val signature =
+            Signature.getInstance(EnvelopePublicKey.ALGORITHM).run {
+                initSign(keyPair.private)
+                update(data)
+                Base64.getEncoder().encodeToString(sign())
+            }
         val publicKeyBase64 = Base64.getEncoder().encodeToString(keyPair.public.encoded)
 
         assertTrue(EnvelopePublicKey.verify(data, signature, publicKeyBase64))
@@ -27,11 +30,12 @@ class EnvelopePublicKeyTest {
         val signingKeyPair = KeyPairGenerator.getInstance(EnvelopePublicKey.ALGORITHM).generateKeyPair()
         val otherKeyPair = KeyPairGenerator.getInstance(EnvelopePublicKey.ALGORITHM).generateKeyPair()
         val data = "canonical-input".toByteArray(Charsets.UTF_8)
-        val signature = Signature.getInstance(EnvelopePublicKey.ALGORITHM).run {
-            initSign(signingKeyPair.private)
-            update(data)
-            Base64.getEncoder().encodeToString(sign())
-        }
+        val signature =
+            Signature.getInstance(EnvelopePublicKey.ALGORITHM).run {
+                initSign(signingKeyPair.private)
+                update(data)
+                Base64.getEncoder().encodeToString(sign())
+            }
         val otherPublicKeyBase64 = Base64.getEncoder().encodeToString(otherKeyPair.public.encoded)
 
         assertFalse(EnvelopePublicKey.verify(data, signature, otherPublicKeyBase64))
@@ -41,14 +45,47 @@ class EnvelopePublicKeyTest {
     fun `rejects a signature over tampered data`() {
         val keyPair = KeyPairGenerator.getInstance(EnvelopePublicKey.ALGORITHM).generateKeyPair()
         val data = "canonical-input".toByteArray(Charsets.UTF_8)
-        val signature = Signature.getInstance(EnvelopePublicKey.ALGORITHM).run {
-            initSign(keyPair.private)
-            update(data)
-            Base64.getEncoder().encodeToString(sign())
-        }
+        val signature =
+            Signature.getInstance(EnvelopePublicKey.ALGORITHM).run {
+                initSign(keyPair.private)
+                update(data)
+                Base64.getEncoder().encodeToString(sign())
+            }
         val publicKeyBase64 = Base64.getEncoder().encodeToString(keyPair.public.encoded)
 
         assertFalse(EnvelopePublicKey.verify("tampered-input".toByteArray(Charsets.UTF_8), signature, publicKeyBase64))
+    }
+
+    @Test
+    fun `converts the production SPKI public key to the required raw Ed25519 key`() {
+        assertContentEquals(
+            Base64.getDecoder().decode("ciPwULtWEl+Wor4bWHsuAZSwICQ/sYNXWDZyjPPloWE="),
+            EnvelopePublicKey.rawEd25519PublicKey(),
+        )
+    }
+
+    @Test
+    fun `rejects a public key with an invalid Ed25519 SPKI prefix`() {
+        val malformed = Base64.getDecoder().decode(EnvelopePublicKey.PRODUCTION_PUBLIC_KEY_BASE64)
+        malformed[8] = 0
+
+        assertFailsWith<IllegalArgumentException> {
+            EnvelopePublicKey.rawEd25519PublicKey(Base64.getEncoder().encodeToString(malformed))
+        }
+    }
+
+    @Test
+    fun `rejects a public key whose SPKI length is not exactly Ed25519`() {
+        val truncated =
+            Base64
+                .getDecoder()
+                .decode(EnvelopePublicKey.PRODUCTION_PUBLIC_KEY_BASE64)
+                .dropLast(1)
+                .toByteArray()
+
+        assertFailsWith<IllegalArgumentException> {
+            EnvelopePublicKey.rawEd25519PublicKey(Base64.getEncoder().encodeToString(truncated))
+        }
     }
 
     @Test

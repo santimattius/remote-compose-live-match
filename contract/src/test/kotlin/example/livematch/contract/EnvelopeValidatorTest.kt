@@ -82,6 +82,28 @@ class EnvelopeValidatorTest {
     }
 
     @Test
+    fun `passes canonical data to an injected signature verifier`() {
+        val envelope = signedEnvelope()
+        var verifierCalls = 0
+
+        val result =
+            EnvelopeValidator.validate(
+                envelope = envelope,
+                nowEpochSeconds = 1_500L,
+                publicKeyBase64 = publicKeyBase64,
+            ) { signedBytes, signatureBase64, keyBase64 ->
+                verifierCalls += 1
+                assertEquals(envelope.canonicalSigningInput().toList(), signedBytes.toList())
+                assertEquals(envelope.signature, signatureBase64)
+                assertEquals(publicKeyBase64, keyBase64)
+                true
+            }
+
+        assertEquals(EnvelopeValidationResult.Valid, result)
+        assertEquals(1, verifierCalls)
+    }
+
+    @Test
     fun `rejects an invalid signature`() {
         val otherKeyPair = KeyPairGenerator.getInstance(EnvelopePublicKey.ALGORITHM).generateKeyPair()
         val envelope = signedEnvelope(signingKey = otherKeyPair.private)
