@@ -1,29 +1,22 @@
 package example.livematch.creator
 
+import example.livematch.contract.EnvelopeValidator
 import example.livematch.contract.ScheduledMatch
 import example.livematch.contract.ScheduledMatchDocument
 import example.livematch.contract.ScheduledMatchRequest
 import example.livematch.contract.Theme
 import example.livematch.contract.Viewport
-import java.nio.file.Files
 import java.nio.file.Path
 
 object ScheduledFixtureGenerator {
     @JvmStatic
     fun main(args: Array<String>) {
         val root = Path.of(args.firstOrNull() ?: "fixtures")
-        val document = ProceduralJvmMatchDocumentCreator().create(request())
-        validate(document)
-        val files = mapOf("scheduled-match.rc" to document.payload.bytes, "scheduled-match.manifest" to manifest(document).toByteArray())
+        val fixture = fixture()
         if (args.contains("--check")) {
-            files.forEach { (name, bytes) ->
-                require(
-                    Files.exists(root.resolve(name)) && Files.readAllBytes(root.resolve(name)).contentEquals(bytes),
-                ) { "Stale fixture: $name" }
-            }
+            SignedFixturePublisher.check(root, fixture)
         } else {
-            Files.createDirectories(root)
-            files.forEach { (name, bytes) -> Files.write(root.resolve(name), bytes) }
+            SignedFixturePublisher.publish(root, fixture, EnvelopeSigningKeyLoader.loadFromEnv())
         }
     }
 
@@ -36,13 +29,23 @@ object ScheduledFixtureGenerator {
             1_700_000_000_000,
         )
 
-    private fun validate(document: ScheduledMatchDocument) {
+    fun fixture(): SignedFixturePublisher.Fixture {
+        val document = ProceduralJvmMatchDocumentCreator().create(request())
         require(document.payload.bytes.isNotEmpty())
         require(document.envelope.verifies(document.payload))
+        return SignedFixturePublisher.Fixture(
+            name = "scheduled-match",
+            payload = document.payload,
+            creatorMetadata = document.metadata,
+            envelopeMetadata =
+                EnvelopeMetadataInput(
+                    documentId = "scheduled-match",
+                    revision = 1L,
+                    matchId = "scheduled-2027-01",
+                    minHostVersion = EnvelopeValidator.CURRENT_HOST_VERSION,
+                    createdAtEpochSeconds = SignedFixturePublisher.FIXTURE_CREATED_AT_EPOCH_SECONDS,
+                    expiresAtEpochSeconds = SignedFixturePublisher.FIXTURE_EXPIRES_AT_EPOCH_SECONDS,
+                ),
+        )
     }
-
-    private fun manifest(document: ScheduledMatchDocument) =
-        with(document.metadata) {
-            "creator=$creator\nversion=$version\nviewport=${viewport.widthPx}x${viewport.heightPx}\nlocale=$localeTag\ntheme=$theme\ngenerationEpochMillis=$generationEpochMillis\nsha256=${document.envelope.sha256}\nsigningBoundary=${document.envelope.signingBoundary}\n"
-        }
 }
