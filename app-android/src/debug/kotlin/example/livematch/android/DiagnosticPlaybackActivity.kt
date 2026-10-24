@@ -17,6 +17,7 @@ import example.livematch.contract.ActionAllowlist
 import example.livematch.contract.ActionId
 import example.livematch.contract.MatchPhase
 import example.livematch.contract.RemoteDocumentPayload
+import java.time.Instant
 
 class DiagnosticPlaybackActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,11 +51,21 @@ class DiagnosticPlaybackActivity : ComponentActivity() {
         fixture: String,
     ) {
         val bytes = assets.open(fixture).use { it.readBytes() }
+        if (fixture in SIGNED_ENVELOPE_FIXTURE_NAMES) {
+            val result =
+                EnvelopeDocumentLoader().load(bytes, Instant.now().epochSecond) { document ->
+                    RemoteComposePlayerAdapter().load(player, document)
+                }
+            if (result != EnvelopeLoadResult.Loaded) {
+                Log.w(TAG, "Rejected diagnostic fixture envelope: $result")
+                return
+            }
+        } else {
+            RemoteComposePlayerAdapter().load(player, RemoteDocumentPayload.from(bytes, bytes.size))
+        }
         // Must register after setDocument, not before: see MainActivity's addIdActionListener
         // comment / docs/evidence/wu09-click-area-root-cause.md.
-        RemoteComposePlayerAdapter().load(player, RemoteDocumentPayload.from(bytes, bytes.size))
-        val phase = PHASE_BY_FIXTURE[fixture]
-        if (phase != null) {
+        PHASE_BY_FIXTURE[fixture]?.let { phase ->
             player.addIdActionListener { _, metadata -> onDocumentAction(phase, metadata) }
         }
     }
@@ -69,12 +80,18 @@ class DiagnosticPlaybackActivity : ComponentActivity() {
     ) {
         val actionId = wireValue?.let(ActionId::fromWireValue)
         when {
-            actionId == null -> Log.w(TAG, "Ignoring unknown action id: $wireValue")
+            actionId == null -> {
+                Log.w(TAG, "Ignoring unknown action id: $wireValue")
+            }
+
             ActionAllowlist.isAllowed(phase, actionId) -> {
                 lastDispatchedAction = actionId
                 Log.i(TAG, "Accepted action: ${actionId.wireValue}")
             }
-            else -> Log.w(TAG, "Rejected action not allowed in $phase: ${actionId.wireValue}")
+
+            else -> {
+                Log.w(TAG, "Rejected action not allowed in $phase: ${actionId.wireValue}")
+            }
         }
     }
 
@@ -85,13 +102,18 @@ class DiagnosticPlaybackActivity : ComponentActivity() {
         const val MODE_POST_ATTACH = "post_attach"
         const val PAINT_PROBE_FIXTURE_NAME = "paint-probe.rc"
         const val ALPHA18_API6_CONTROL_FIXTURE_NAME = "alpha18-api6-control.rc"
-        const val LIVE_MATCH_FIXTURE_NAME = "live-match.rc"
-        const val FINISHED_MATCH_FIXTURE_NAME = "finished-match.rc"
+        const val LIVE_MATCH_FIXTURE_NAME = "live-match.rce"
+        const val FINISHED_MATCH_FIXTURE_NAME = "finished-match.rce"
         private const val TAG = "DiagnosticPlayback"
         private val DIAGNOSTIC_FIXTURE_NAMES =
             setOf(
                 PAINT_PROBE_FIXTURE_NAME,
                 ALPHA18_API6_CONTROL_FIXTURE_NAME,
+                LIVE_MATCH_FIXTURE_NAME,
+                FINISHED_MATCH_FIXTURE_NAME,
+            )
+        private val SIGNED_ENVELOPE_FIXTURE_NAMES =
+            setOf(
                 LIVE_MATCH_FIXTURE_NAME,
                 FINISHED_MATCH_FIXTURE_NAME,
             )
