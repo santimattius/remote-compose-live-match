@@ -81,3 +81,23 @@ artifact, fixed metadata, signature, and embedded raw bytes through `--check`.
 To revert this Live/Finished child, return only those two generators to raw fixture publication,
 remove their `.rce` artifacts and signed-manifest fields, and preserve both raw `.rc` byte streams.
 Leave the shared publisher and Scheduled signed fixture unchanged.
+
+## Final Android/device evidence
+
+On a fresh Pixel_9/API 35 run, `EnvelopeDocumentLoaderInstrumentationTest` passed its three
+public-boundary cases: the packaged Scheduled envelope invokes the load callback once; a modified
+document rejects with `HASH_MISMATCH` and zero callbacks; and a modified signature rejects with
+`INVALID_SIGNATURE` and zero callbacks. The complete connected Android suite passed all eight
+cases on Pixel_9/API 35. An already-connected Pixel_10_Pro/Android 16 also passed the same three
+focused and eight suite cases.
+
+The final managed JVM/Android unit run and all three signed-fixture checks passed. The retained
+production screenshot `docs/evidence/wu12/valid-envelope-render.png` has SHA-256
+`200842f94ea99fe266f7ab604ade04f2250477ca2bb18f7298b35f8a5690780c`; visual inspection
+confirms the navy Scheduled card with Orcas, Tigers, kickoff value, and the Remind me action.
+
+## Final rollback boundary
+
+Revert only this final child to remove the device instrumentation test, Android/device evidence,
+screenshot, and WU12 status/traceability updates. Keep the prior signed fixture artifacts,
+raw `.rc` byte streams, publisher, Android validation boundary, and host integration unchanged.
