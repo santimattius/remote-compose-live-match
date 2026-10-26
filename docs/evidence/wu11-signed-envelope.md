@@ -1,5 +1,13 @@
 # WU11 — Signed envelope, JVM-level (signer + validator)
 
+## Scope
+
+Starts the "signed envelope" pipeline piece deferred since WU4 (spec sections 6.2, 7, 9). Split
+cleanly from host/fixture wiring: this work unit is pure library code (`contract` +
+`creator-jvm`), fully JVM-testable, with no device evidence needed. Wiring this into the real
+`ProceduralJvm*Creator`s, regenerating fixtures, host-side validation, and device evidence for a
+valid load and a rejected tampered envelope are deferred to WU12.
+
 ## Design decisions
 
 ### Signature algorithm: Ed25519
@@ -50,6 +58,15 @@ Per spec section 7 ("Ningún secreto de firma debe formar parte del repositorio"
 - Verified the key is actually excluded: `git add -n keys/ .gitignore` stages only
   `.gitignore` and `keys/README.md`, never the `.pem` files.
 
+### Testability without a repo-committed private key
+
+`EnvelopeValidator.validate(...)` and `EnvelopePublicKey.verify(...)` both take an optional
+`publicKeyBase64` parameter (defaulting to the production key). This lets every test generate its
+own throwaway `KeyPairGenerator.getInstance("Ed25519")` keypair in memory and exercise the full
+sign→validate round trip and every rejection path without ever touching the real private key file
+or the `LIVE_MATCH_SIGNING_PRIVATE_KEY` env var. The production public key is only exercised for
+real once WU12 wires actual signed fixtures end-to-end on-device.
+
 ### `RemoteUiEnvelope` is a plain class, not a data class
 
 Spec 6.2 shows it as a Kotlin `data class`, but it carries a `ByteArray` field (`bytes`).
@@ -86,3 +103,13 @@ acceptance. The signer signs the same authenticated algorithm field.
 Full-suite regression check: `./gradlew test :app-android:testDebugUnitTest --no-daemon` —
 `BUILD SUCCESSFUL`, nothing broken by this change (it adds new files only; no existing production
 code was touched).
+
+## Explicitly not done here (WU12)
+
+- `ProceduralJvm*Creator`s still build the old marker-only `PayloadEnvelope`, not a real
+  `RemoteUiEnvelope`.
+- Fixtures (`scheduled-match.rc`, `live-match.rc`, `finished-match.rc`) are unchanged — no new
+  SHA-256s from this work unit.
+- `MainActivity`/`DiagnosticPlaybackActivity` still load raw asset bytes directly; no envelope
+  parsing or `EnvelopeValidator` call sits in front of `RemoteComposePlayerAdapter().load(...)`.
+- No device evidence — this work unit needed none, since nothing Android-facing changed.

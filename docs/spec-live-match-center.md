@@ -423,7 +423,7 @@ No se publicarán porcentajes comparativos hasta que el código, dispositivo, ve
 | Creación JVM | Tarea que genera fixtures sin Android SDK | Hecho para Scheduled/Live/Finished (`generate*Fixture`/`check*Fixture`, WU2/WU4/WU5); Cancelled/Suspended pendientes |
 | Expresiones locales | Reloj o pulso sin polling de red | Pendiente |
 | Resiliencia | Caché y fallback ante payload inválido | Pendiente |
-| Seguridad | Firma, hash, límites y acciones permitidas | Pendiente |
+| Seguridad | Firma, hash, límites y acciones permitidas | Parcial (WU11): `RemoteUiEnvelope`, `EnvelopeSigner` (Ed25519, JVM-only, clave privada fuera del repo - ver `keys/README.md`) y `EnvelopeValidator` (tamaño, schema, minHostVersion, timestamps/expiración, hash, firma) implementados y testeados a nivel JVM. Acciones permitidas: ver fila anterior. Pendiente: cablear el envelope real en los creators/fixtures y en el host (`MainActivity`/`DiagnosticPlaybackActivity`), con evidencia de dispositivo para un envelope válido y uno adulterado (WU12) |
 | Rendimiento | Benchmark reproducible | Pendiente |
 | Accesibilidad | Resultados TalkBack y font scale | Pendiente |
 | DX | Preview, fixtures, screenshots y tests | Pendiente |
