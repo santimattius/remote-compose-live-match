@@ -1,3 +1,0 @@
-command=unzip -p app-android/build/outputs/apk/debug/app-android-debug.apk assets/scheduled-match.rc | shasum -a 256
-assets/scheduled-match.rc
-57884b403add2d49825b89d71e6257fbc5a15cd66f51581890a8442b54741d51  -

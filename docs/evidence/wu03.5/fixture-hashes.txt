@@ -1,3 +1,0 @@
-2feee2fa05b3fe13bb9b21e90269212ad3620ee91f3d00e5afb85e30cb555447  fixtures/scheduled-match.rc
-4a3b1f4c4fe2c0c00153fa4655bfc2ada94564abd1fde6edfd0bcf4ffe0011e6  fixtures/diagnostic/paint-probe.rc
-5474bfb60c9bd9329116c5e3d0ab407f00efae516e428f41174a35896dbce234  fixtures/diagnostic/alpha18-api6-control.rc

@@ -63,8 +63,8 @@ class DiagnosticPlaybackActivity : ComponentActivity() {
         } else {
             RemoteComposePlayerAdapter().load(player, RemoteDocumentPayload.from(bytes, bytes.size))
         }
-        // Must register after setDocument, not before: see MainActivity's addIdActionListener
-        // comment / docs/evidence/wu09-click-area-root-cause.md.
+        // Must register after setDocument, not before; see MainActivity and
+        // docs/alpha-learnings.md#register-action-listeners-after-loading-the-document.
         PHASE_BY_FIXTURE[fixture]?.let { phase ->
             player.addIdActionListener { _, metadata -> onDocumentAction(phase, metadata) }
         }

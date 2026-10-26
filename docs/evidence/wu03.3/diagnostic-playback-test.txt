@@ -1,9 +1,0 @@
-$ ANDROID_SERIAL=emulator-5556 ./gradlew :app-android:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=example.livematch.android.DiagnosticPlaybackTest --no-daemon
-
-> Task :app-android:connectedDebugAndroidTest
-Starting 1 tests on Pixel_9(AVD) - 15
-
-Finished 1 tests on Pixel_9(AVD) - 15
-
-BUILD SUCCESSFUL in 13s
-65 actionable tasks: 1 executed, 64 up-to-date

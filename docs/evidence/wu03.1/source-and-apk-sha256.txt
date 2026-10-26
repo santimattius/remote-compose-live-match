@@ -1,4 +1,0 @@
-fixture=fixtures/diagnostic/paint-probe.rc
-4a3b1f4c4fe2c0c00153fa4655bfc2ada94564abd1fde6edfd0bcf4ffe0011e6  fixtures/diagnostic/paint-probe.rc
-apk=app-android/build/outputs/apk/debug/app-android-debug.apk
-f1e922632f84a82cd5186e637c34e8506884f45756143979414a91c93951891a  app-android/build/outputs/apk/debug/app-android-debug.apk

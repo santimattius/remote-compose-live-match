@@ -1,1 +1,0 @@
-UI hierchary dumped to: /sdcard/wu03-layout-2.xml

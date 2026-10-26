@@ -1,1 +1,0 @@
-$ grep -Ei "RemoteComposePlayer|Error loading document|Error setting document|Unsupported document|exception" post-attach-paint-probe-logcat.txt

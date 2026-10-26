@@ -1,1 +1,0 @@
-$ grep -Ei "RemoteComposePlayer|Error loading document|Error setting document|Unsupported document|exception" post-attach-alpha18-api6-control-logcat.txt

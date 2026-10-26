@@ -1,2 +1,0 @@
-c79b77054683d0b41d2083afd3a4d0902170daad3213e04af6d9464c494ae594  docs/evidence/wu03.2/post-attach-paint-probe.png
-83bd5a90e2b635ac5380e12eadccd99eef778907cf06854e5e27e27045b67a1d  docs/evidence/wu03.2/post-attach-alpha18-api6-control.png

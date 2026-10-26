@@ -1,8 +1,0 @@
-$ adb -s emulator-5554 shell am start -W -n example.livematch.android/.DiagnosticPlaybackActivity --es mode pre_attach --es fixture finished-match.rc
-Starting: Intent { cmp=example.livematch.android/.DiagnosticPlaybackActivity (has extras) }
-Status: ok
-LaunchState: COLD
-Activity: example.livematch.android/.DiagnosticPlaybackActivity
-TotalTime: 450
-WaitTime: 451
-Complete

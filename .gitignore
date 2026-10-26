@@ -2,6 +2,11 @@
 .atl/
 .pi/
 
+# Keep internal task/evidence records local; only the durable learning log is published.
+/odd/
+/docs/*
+!/docs/alpha-learnings.md
+
 # Gradle
 .gradle/
 **/build/
