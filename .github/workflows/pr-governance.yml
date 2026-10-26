@@ -1,0 +1,33 @@
+---
+name: PR Governance
+
+"on":
+  pull_request_target:
+    types: [opened, reopened, synchronize, edited, labeled, unlabeled]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+concurrency:
+  group: pr-governance-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  governance:
+    name: PR governance
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out trusted governance
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Test governance validator
+        run: python3 -m unittest discover -s .github/scripts -p 'test_*.py'
+      - name: Validate pull request governance
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/validate_pr.py
