@@ -11,6 +11,7 @@ S5. Never stage, commit, print, or publish local private signing keys.
 S6. The final child tree must preserve the completed WU12 behavior from `feat/wu12-signed-envelope-integration` while inheriting the GitHub governance files now on `main`.
 S7. User decision: “Agregar CI y actualizar la cadena (recomendado)”.
 S8. User decision: “Abrir un PR separado hacia main”.
+S9. User authorization: “authorizo a mergear la cadena”.
 
 ## Tasks
 T1 [S1-S6] explore — Derive and verify one cohesive review slicing plan. Status: done. Commit: N/A.
@@ -30,6 +31,8 @@ T14 [S7-S8] inline — Implement and locally validate trusted PR governance plus
 T15 [S3, S7-S8] parent — Publish the unprivileged CI update through the chain and observe real check results. Risk: item 5. Status: done. Commits: `a840c17`, `b25e7ff`, propagated through `50eecd0`.
 T16 [S8] parent — Create an approved CI-bootstrap issue and publish the separate trusted-governance PR to `main`. Risk: item 5. Status: done. Commit: `114d532`. PR: `#13`.
 T17 [S8] parent — Wait for the bootstrap PR to be reviewed and merged before updating the WU12 chain. Risk: item 5. Status: done. Commit: `b93ce3b` (merge).
+T18 [S9] parent — Land PRs `#2`-`#11` sequentially onto `main` without bypassing checks. Risk: item 5. Status: pending. Commit: pending.
+T19 [S2-S9] parent — Verify the final merged repository, issue state, and closed PR chain. Risk: item 5. Status: pending. Commit: N/A.
 
 ## Log
 L1. User request: “antes de continuar vayamos armando los PRs”.
@@ -62,3 +65,5 @@ L27. The user reported PR `#13` merged; GitHub read-back confirmed `MERGED` at `
 L28. T15 merged trusted `main` into the tracker (`a840c17`), added unprivileged Gradle verification (`b25e7ff`), and propagated immediate-parent merge commits through final child `50eecd0`. Every push succeeded; the tracker diff is 72/400 and child budgets remain 359, 299, 213, 289, 219, 206, 344, 84, and 247 authored lines.
 L29. Final live GitHub read-back verified issue `#1` open with `status:approved,type:feature`; tracker PR `#2` remains draft; PRs `#2`-`#11` retain exact immediate-parent bases, one `type:feature` label, clean mergeability, and successful `PR governance` plus `Gradle verification` checks. Issue `#12` is closed with `status:approved,type:feature`, and bootstrap PR `#13` is merged as `b93ce3b`. Local ancestry, conventional commits, no co-author trailers, private-key exclusion, governance inheritance, and final runtime-tree preservation also passed.
 L30. Independent final verification passed structural S5-S6 evidence and all local branch/budget/workflow checks but could not access GitHub; the parent completed the required live read-back once and recorded the exact successful state in L29.
+L31. User authorization: “authorizo a mergear la cadena”. Landing the stack without check bypass requires merging oldest-first, retargeting each next PR to `main`, and keeping approved issue `#1` open through intermediate merges so the trusted governance check can rerun; the last PR should leave the issue closed.
+L32. User selected: “Autorizar aterrizaje secuencial completo”. This explicitly authorizes marking PR `#2` ready, merging PRs `#2`-`#11` oldest-first, retargeting each next PR to `main`, reopening issue `#1` after intermediate merges `#2`-`#10`, waiting for checks at every step, and leaving issue `#1` closed after PR `#11`.
