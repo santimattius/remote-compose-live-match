@@ -83,7 +83,7 @@ class DiagnosticPlaybackTest {
         const val DIAGNOSTIC_ACTIVITY = "example.livematch.android.DiagnosticPlaybackActivity"
         const val PAINT_PROBE_SHA256 = "4a3b1f4c4fe2c0c00153fa4655bfc2ada94564abd1fde6edfd0bcf4ffe0011e6"
         const val ALPHA18_API6_CONTROL_SHA256 = "5474bfb60c9bd9329116c5e3d0ab407f00efae516e428f41174a35896dbce234"
-        const val LIVE_MATCH_SHA256 = "bdf280c864792c39108dcd094e67047a689e038cdb5ef2f7711d331c7a71d6b5"
-        const val FINISHED_MATCH_SHA256 = "92a920879765919d1933ce4adef846efc317f94c130fbc5199b288ac6ab52d03"
+        const val LIVE_MATCH_SHA256 = "c71a9e40412fd3f529942e5650213a3e2a5278c71de9826d4830730a0f0e21e4"
+        const val FINISHED_MATCH_SHA256 = "1b6d099728a06268ba97ccbea2c80baabb8c194358557339a8fbf539dd177aa2"
     }
 }

@@ -10,7 +10,7 @@ val scheduledFixtureAssets = layout.buildDirectory.dir("generated/assets/schedul
 val diagnosticFixtureAssets = layout.buildDirectory.dir("generated/assets/diagnosticFixture")
 val stageScheduledFixture =
     tasks.register<Sync>("stageScheduledFixture") {
-        from(rootProject.layout.projectDirectory.file("fixtures/scheduled-match.rc"))
+        from(rootProject.layout.projectDirectory.file("fixtures/scheduled-match.rce"))
         into(scheduledFixtureAssets)
     }
 val stageDiagnosticFixture =
@@ -18,8 +18,8 @@ val stageDiagnosticFixture =
         from(
             rootProject.layout.projectDirectory.file("fixtures/diagnostic/paint-probe.rc"),
             rootProject.layout.projectDirectory.file("fixtures/diagnostic/alpha18-api6-control.rc"),
-            rootProject.layout.projectDirectory.file("fixtures/live-match.rc"),
-            rootProject.layout.projectDirectory.file("fixtures/finished-match.rc"),
+            rootProject.layout.projectDirectory.file("fixtures/live-match.rce"),
+            rootProject.layout.projectDirectory.file("fixtures/finished-match.rce"),
         )
         into(diagnosticFixtureAssets)
     }
