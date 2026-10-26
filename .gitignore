@@ -16,3 +16,6 @@ local.properties
 
 # macOS
 .DS_Store
+
+# Envelope signing secrets - see keys/README.md. Never commit private key material.
+keys/*.pem
