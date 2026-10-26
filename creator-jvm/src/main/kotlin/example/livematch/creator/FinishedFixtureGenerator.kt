@@ -1,29 +1,22 @@
 package example.livematch.creator
 
+import example.livematch.contract.EnvelopeValidator
 import example.livematch.contract.FinishedMatch
 import example.livematch.contract.FinishedMatchDocument
 import example.livematch.contract.FinishedMatchRequest
 import example.livematch.contract.Theme
 import example.livematch.contract.Viewport
-import java.nio.file.Files
 import java.nio.file.Path
 
 object FinishedFixtureGenerator {
     @JvmStatic
     fun main(args: Array<String>) {
         val root = Path.of(args.firstOrNull() ?: "fixtures")
-        val document = ProceduralJvmFinishedMatchDocumentCreator().create(request())
-        validate(document)
-        val files = mapOf("finished-match.rc" to document.payload.bytes, "finished-match.manifest" to manifest(document).toByteArray())
+        val fixture = fixture()
         if (args.contains("--check")) {
-            files.forEach { (name, bytes) ->
-                require(
-                    Files.exists(root.resolve(name)) && Files.readAllBytes(root.resolve(name)).contentEquals(bytes),
-                ) { "Stale fixture: $name" }
-            }
+            SignedFixturePublisher.check(root, fixture)
         } else {
-            Files.createDirectories(root)
-            files.forEach { (name, bytes) -> Files.write(root.resolve(name), bytes) }
+            SignedFixturePublisher.publish(root, fixture, EnvelopeSigningKeyLoader.loadFromEnv())
         }
     }
 
@@ -36,13 +29,23 @@ object FinishedFixtureGenerator {
             1_700_000_000_000,
         )
 
-    private fun validate(document: FinishedMatchDocument) {
+    fun fixture(): SignedFixturePublisher.Fixture {
+        val document = ProceduralJvmFinishedMatchDocumentCreator().create(request())
         require(document.payload.bytes.isNotEmpty())
         require(document.envelope.verifies(document.payload))
+        return SignedFixturePublisher.Fixture(
+            name = "finished-match",
+            payload = document.payload,
+            creatorMetadata = document.metadata,
+            envelopeMetadata =
+                EnvelopeMetadataInput(
+                    documentId = "finished-match",
+                    revision = 1L,
+                    matchId = "finished-2027-01",
+                    minHostVersion = EnvelopeValidator.CURRENT_HOST_VERSION,
+                    createdAtEpochSeconds = SignedFixturePublisher.FIXTURE_CREATED_AT_EPOCH_SECONDS,
+                    expiresAtEpochSeconds = SignedFixturePublisher.FIXTURE_EXPIRES_AT_EPOCH_SECONDS,
+                ),
+        )
     }
-
-    private fun manifest(document: FinishedMatchDocument) =
-        with(document.metadata) {
-            "creator=$creator\nversion=$version\nviewport=${viewport.widthPx}x${viewport.heightPx}\nlocale=$localeTag\ntheme=$theme\ngenerationEpochMillis=$generationEpochMillis\nsha256=${document.envelope.sha256}\nsigningBoundary=${document.envelope.signingBoundary}\n"
-        }
 }
