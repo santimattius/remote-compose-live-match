@@ -63,6 +63,37 @@ object RemoteNodeTapper {
         text: String,
     ): AccessibilityNodeInfo? = findNode(node) { it.text?.toString() == text }
 
+    /**
+     * Waits for [waitFor] to render and for the layout to settle, then returns the text and screen bounds of every
+     * rendered text node in layout order.
+     */
+    fun renderedTexts(waitFor: String): List<Pair<String, Rect>> {
+        boundsOf(waitFor)
+        val automation = instrumentation.uiAutomation
+        fun snapshot(): List<Pair<String, Rect>> {
+            val found = mutableListOf<Pair<String, Rect>>()
+
+            fun visit(node: AccessibilityNodeInfo?) {
+                if (node == null) return
+                val text = node.text?.toString()
+                if (!text.isNullOrEmpty()) found += text to Rect().also(node::getBoundsInScreen)
+                for (i in 0 until node.childCount) visit(node.getChild(i))
+            }
+            visit(automation.rootInActiveWindow)
+            return found
+        }
+        val deadline = SystemClock.uptimeMillis() + PLAYBACK_TIMEOUT_MS
+        var previous = snapshot()
+        while (SystemClock.uptimeMillis() < deadline) {
+            Thread.sleep(STABILITY_INTERVAL_MS)
+            val current = snapshot()
+            // The clock text changes every second, so compare geometry only.
+            if (current.map { it.second } == previous.map { it.second }) return current
+            previous = current
+        }
+        error("The layout never settled; last seen ")
+    }
+
     /** True when a node showing exactly [text] is rendered right now; unlike the other helpers it does not wait. */
     fun isTextPresent(text: String): Boolean {
         val automation = instrumentation.uiAutomation
