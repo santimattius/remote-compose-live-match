@@ -38,12 +38,13 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalRemoteCreationComposeApi::class)
 class AndroidMatchDocumentCompiler(
     private val context: Context,
+    private val reduceMotion: () -> Boolean = { MotionPreference.isReduced(context) },
 ) {
     suspend fun compile(match: ScheduledMatch): RemoteDocumentPayload =
         captureSingleRemoteDocument(context) { RemoteScheduledMatchContent(match) }.toPayload()
 
     suspend fun compile(match: LiveMatch): RemoteDocumentPayload =
-        captureSingleRemoteDocument(context) { RemoteLiveMatchContent(match, Instant.now().epochSecond.toInt()) }.toPayload()
+        captureSingleRemoteDocument(context) { RemoteLiveMatchContent(match, Instant.now().epochSecond.toInt(), reduceMotion()) }.toPayload()
 
     suspend fun compile(match: FinishedMatch): RemoteDocumentPayload =
         captureSingleRemoteDocument(context) { RemoteFinishedMatchContent(match) }.toPayload()
@@ -107,6 +108,7 @@ private fun RemoteScheduledMatchContent(match: ScheduledMatch) {
 private fun RemoteLiveMatchContent(
     match: LiveMatch,
     captureEpochSecond: Int,
+    reduceMotion: Boolean,
 ) {
     val startingClockSeconds = LiveMatchRemotePresentation.startingClockSeconds(match.clock)
     // The host evaluates the wall clock; anchoring to the capture instant makes the match clock start at
@@ -114,7 +116,9 @@ private fun RemoteLiveMatchContent(
     val matchClockSeconds = RemoteTimeVariables.epochSecond + (startingClockSeconds - captureEpochSecond)
     val clockMinutes = matchClockSeconds / 60
     val clockSeconds = matchClockSeconds.rem(60)
-    val livePulseAlpha = RemoteTimeVariables.continuousSeconds.rem(1f) * 0.6f + 0.4f
+    // The pulse is decoration. The clock keeps advancing because it is information, not motion.
+    val livePulseAlpha =
+        if (reduceMotion) RemoteFloat(1f) else RemoteTimeVariables.continuousSeconds.rem(1f) * 0.6f + 0.4f
     val detailsVisible = rememberMutableRemoteFloat(0f)
 
     RemoteColumn(modifier = matchContainer(LiveMatchRemotePresentation.accessibleMatchSummary(match))) {
