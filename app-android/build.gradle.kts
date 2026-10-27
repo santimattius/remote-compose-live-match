@@ -34,7 +34,7 @@ android {
 
     defaultConfig {
         applicationId = "example.livematch.android"
-        minSdk = 26
+        minSdk = 29
         targetSdk = 35
         versionCode = 1
         versionName = "0.1"
@@ -64,8 +64,9 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.androidx.activity.compose)
     implementation(libs.remote.core)
+    implementation(libs.remote.creation.compose)
+    implementation(libs.remote.creation.expression)
     implementation(libs.remote.player.view)
-    testImplementation(libs.remote.creation.compose)
     testImplementation(libs.remote.creation.core)
     testImplementation(kotlin("test"))
     androidTestImplementation(libs.androidx.test.core)
