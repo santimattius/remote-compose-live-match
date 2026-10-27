@@ -27,6 +27,83 @@ No presentar `RemoteComposeWriter` ni los creadores JVM de los fixtures como la 
 recomendada del producto. Forman parte del historial y de las pruebas de compatibilidad del
 repositorio, no de la dirección soportada para el ejemplo.
 
+## Consecuencia para la tesis del artículo
+
+La decisión anterior tiene un efecto que el artículo debe decir con claridad. En este ejemplo el
+backend firma **datos**, y la estructura visual de cada estado (Programado, En vivo, Finalizado)
+la define el código `@RemoteComposable` de la aplicación Android. Por eso:
+
+- Los datos del partido cambian sin publicar la app.
+- **La estructura de la tarjeta no cambia sin publicar la app.** Añadir un bloque, quitar un
+  elemento o reordenar la tarjeta exige una nueva versión del host.
+
+La documentación oficial describe el mismo modelo: "Your app runs your `@RemoteComposable`
+functions to record a document" y "Your Kotlin code runs only when your app creates the
+document". Guarda silencio sobre la creación en un servidor, la entrega por red y la
+compatibilidad entre quien graba y el player. Que la estructura viaje sin publicar la app es una
+propuesta arquitectónica del artículo, no una capacidad documentada.
+
+Afirmaciones del artículo que dejan de coincidir con el repositorio (buscar por el texto, no por
+el número de línea):
+
+| Afirmación del artículo | Qué es cierto en el repositorio |
+| --- | --- |
+| "La estructura cambia sin publicar la app" | Cambian los datos; la estructura vive en el compilador del host. |
+| El backend ejecuta `captureSingleRemoteDocument` y publica un "documento .rc firmado" | El backend firma un envelope con datos de partido; Android captura el documento. |
+| "Creación en JVM" como sección y el diagrama del backend | La captura con la API pública de Compose ocurre en Android. |
+| Nota de versión y artefactos de `1.0.0-alpha19` | El repositorio fija `1.0.0-alpha22` y `minSdk` 29. |
+| Ante un payload incompatible "se conserva la interacción básica" | El fallback local es un texto sin acciones. |
+| "Ver jugada" o "seguir equipo" se mapean a navegación, autenticación o deep links | Los destinos del host son demostraciones; no hay login ni navegación real. |
+| El benchmark propone tamaño, memoria, CPU y una comparación con Compose local, SDUI y WebView | Solo se miden validación, captura y primer contenido visible; el resto no se midió. |
+
+Lo que sigue en pie y conviene defender: el documento es una representación reproducible y no
+código remoto, el host conserva la autoridad sobre acciones y efectos, y el player resuelve en
+local el reloj, el pulso, el estado simbólico y la adaptación al tamaño sin tráfico de red. La
+ventaja frente a un SDUI queda en la **expresividad y el comportamiento local**, no en la
+independencia respecto de las versiones de la app. La sección "Cuándo tiene sentido" del propio
+artículo ya reconoce que un catálogo SDUI pequeño puede resolver el problema con menos
+complejidad; el ejemplo debe decir que se acerca a ese caso en cuanto a distribución.
+
+Formulación sugerida para sustituir la propiedad central: "los datos cambian sin publicar la app;
+la estructura la define el host, y lo que gana el documento es que el player resuelve animación,
+estado y acciones localmente".
+
+## Alternativa evaluada y no adoptada: crear los documentos fuera de la app
+
+Se comprobó si la estructura podría cambiar sin publicar la app creando los documentos fuera de
+ella. Es viable con API pública, pero con condiciones que el artículo no menciona. Evidencia de
+un emulador Pixel 9 con API 35 y `1.0.0-alpha22`:
+
+- **No es un backend JVM puro.** `remote-creation-compose` solo se publica como AAR de Android.
+  Un módulo JVM de Gradle no puede depender de él (`library elements 'aar'… the consumer needed
+  class files`). `remote-core`, `remote-creation-core` y `remote-creation-jvm` sí son JARs y exponen la capa de
+  bajo nivel; no se verificó el resto de artefactos.
+- **Existe un camino sin `Context`.** `captureSingleRemoteDocument` tiene un overload que no pide un
+  `Context`. Se alcanza solo con API pública: la fábrica `RemoteCreationDisplayInfo(width, height,
+  dpi, fontScale, …)` es pública, `PlatformImageProvider` es una interfaz pública y
+  `createProfile()` también. El constructor de `RemoteCreationDisplayInfo` y
+  `NoOpPlatformImageProvider` son `internal`.
+- **Funciona en un test JVM, con matices.** Con `unitTests.isReturnDefaultValues = true` se crearon
+  los estados Programado y Finalizado. El estado En vivo falló porque la librería convierte
+  `toRemoteString(DecimalFormat)` a `android.icu.text.DecimalFormatSymbols`, que en un stub
+  devuelve `null`. Con Robolectric (Android real) se creó. Robolectric descarga el runtime de
+  Android al ejecutarse, así que el CI necesita red o artefactos en caché.
+- **Los documentos se reproducen igual.** Los tres, creados sin `Context`, se cargaron en el
+  player sin cambios: mismos textos, reloj avanzando, pulso animado y las acciones llegaron al
+  despachador del host.
+- **El reloj hereda el desfase entre relojes.** El documento ancla el reloj al instante de
+  creación. Creado en un equipo y reproducido en otro, mostró 66:56 donde debía marcar al menos
+  67:12, porque ambos relojes no coincidían. Habría que anclarlo a una marca de tiempo del
+  servidor y tolerar el desfase; no se resolvió.
+- **No se probó** un servicio real, el peso de Robolectric en CI, otras densidades o tamaños de
+  creación, ni que la app pudiera volver a `minSdk` 26. Los manifiestos indican que los
+  artefactos del player (`remote-player-view`, `remote-player-core`) requieren 26 y que solo
+  `remote-creation-compose` requiere 29, pero eso es una lectura de manifiestos, no una prueba.
+
+Se descartó por ser un uso no documentado que depende de un runtime de pruebas y de una librería
+alpha. Si el objetivo editorial fuera demostrar que la estructura viaja sin publicar la app, esta
+es la vía a retomar, y el artículo debe presentarla como una propuesta que exige esas condiciones.
+
 ## Qué conservar
 
 Antes de editar, preservar las ideas que siguen siendo válidas:
@@ -142,6 +219,10 @@ marcarse como pseudocódigo si no compilan contra la versión fijada. En particu
 - [ ] Firma, límites, validación, allowlist, caché y fallback se atribuyen a la aplicación.
 - [ ] Las acciones sensibles permanecen bajo autorización del host.
 - [ ] Las capacidades alpha se condicionan a la versión y evidencia verificadas.
+- [ ] La propiedad "la estructura cambia sin publicar la app" se reformula: cambian los datos, y la
+      estructura la define el host.
+- [ ] El benchmark prometido coincide con lo que realmente se midió.
+- [ ] El fallback y los destinos de acción se describen como demostraciones, no como producto.
 - [ ] Los ejemplos y nombres de API se revisan contra la documentación de la versión fijada.
 - [ ] Los enlaces oficiales y los diagramas siguen describiendo el alcance de la afirmación que
       los acompaña.

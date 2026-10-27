@@ -12,11 +12,34 @@ receipts, screenshots, and internal task records are not part of the maintained 
 The backend signs match data, not a Remote Compose document. Android validates the envelope,
 decodes the data and captures it into a document with `captureSingleRemoteDocument(Context, ...)`
 and `@RemoteComposable` content, so the creation side needs an Android `Context`. `creator-jvm`
-only encodes and signs. `remote-creation-compose:1.0.0-alpha22` declares minSdk 29, so the app
-does too; devices on API 26-28 cannot install it.
+only encodes and signs. `remote-creation-compose:1.0.0-alpha22` declares minSdk 29 in its manifest, so the app
+does too; devices on API 26-28 cannot install it. The release notes say the default minSdk is 24
+since alpha17, which does not match that manifest. `remote-player-view` and `remote-player-core`
+declare 26, so the player alone would not require 29.
 
-alpha22 also exposes a `captureSingleRemoteDocument` overload without a `Context`. This project
-does not use it. `CaptureApiEvidenceTest` only asserts that a `Context` overload exists.
+alpha22 also exposes a `captureSingleRemoteDocument` overload without a `Context`, and it was
+evaluated. `CaptureApiEvidenceTest` only asserts that a `Context` overload exists.
+
+- **It is not usable from a pure JVM module.** `remote-creation-compose` is published only as an
+  Android AAR, so a Gradle JVM module cannot resolve it (`library elements 'aar'… the consumer
+  needed class files`). `remote-core`, `remote-creation-core` and `remote-creation-jvm` are plain JARs (the low-level layer); the other artifacts were not checked.
+- **It is reachable with public API.** The function is public. `RemoteCreationDisplayInfo`'s
+  constructor and `NoOpPlatformImageProvider` are `internal`, but the factory
+  `RemoteCreationDisplayInfo(width, height, dpi, fontScale, …)`, `createProfile()` and the public
+  `PlatformImageProvider` interface are enough.
+- **It runs in a JVM unit test, with caveats.** With `unitTests.isReturnDefaultValues = true` the
+  Scheduled and Finished documents were created. The Live document needs real Android ICU: the
+  library converts `toRemoteString(DecimalFormat)` to `android.icu.text.DecimalFormatSymbols`
+  even when a `java.text.DecimalFormat` is passed, and the stub returns `null`. It was created
+  under Robolectric.
+- **The documents play unchanged.** All three, created without a `Context`, loaded in the player
+  with the same text, a ticking clock, an animated pulse and working host actions.
+- **A clock anchored at creation inherits clock skew.** Created on one machine and played on
+  another, the clock showed 66:56 where it should have shown at least 67:12.
+
+The project keeps capturing on the device because creating documents elsewhere is an undocumented
+use that depends on a test runtime and an alpha library. The structure of each state therefore
+lives in the host, and only the match data travels without an app release.
 
 A candidate must compile before it replaces the cached match. Promoting it first let a valid
 payload that failed to capture overwrite the last known good one.
