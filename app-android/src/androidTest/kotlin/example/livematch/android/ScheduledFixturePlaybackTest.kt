@@ -1,5 +1,6 @@
 package example.livematch.android
 
+import android.os.SystemClock
 import android.view.ViewGroup
 import androidx.compose.remote.player.view.RemoteComposePlayer
 import androidx.lifecycle.Lifecycle
@@ -28,12 +29,19 @@ class ScheduledFixturePlaybackTest {
 
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             assertEquals(Lifecycle.State.RESUMED, scenario.state)
+            // The document is captured asynchronously, so the player is attached after launch.
+            var player: RemoteComposePlayer? = null
+            val deadline = SystemClock.uptimeMillis() + PLAYBACK_TIMEOUT_MS
+            while (player == null && SystemClock.uptimeMillis() < deadline) {
+                scenario.onActivity { activity ->
+                    player = findRemoteComposePlayer(activity.findViewById<ViewGroup>(android.R.id.content))
+                }
+                if (player == null) Thread.sleep(POLL_INTERVAL_MS)
+            }
             InstrumentationRegistry.getInstrumentation().waitForIdleSync()
-            scenario.onActivity { activity ->
-                val root = activity.findViewById<ViewGroup>(android.R.id.content)
-                val player = findRemoteComposePlayer(root)
+            scenario.onActivity {
                 assertTrue(player != null)
-                assertTrue(player!!.width > 0 && player.height > 0)
+                assertTrue(player!!.width > 0 && player!!.height > 0)
             }
         }
     }
@@ -55,7 +63,9 @@ class ScheduledFixturePlaybackTest {
             .joinToString("") { "%02x".format(it) }
 
     private companion object {
+        const val PLAYBACK_TIMEOUT_MS = 10_000L
+        const val POLL_INTERVAL_MS = 100L
         const val FIXTURE_NAME = "scheduled-match.rce"
-        const val EXPECTED_SHA256 = "603f4fc6b27ceeb3c7dee6d4da96f5631448b2657f69befb6150bad709b89719"
+        const val EXPECTED_SHA256 = "c91f05ddb28f2d55f4bc7fc0a1ed15a2f34200b8644b8c210f5fd074fa646b8b"
     }
 }

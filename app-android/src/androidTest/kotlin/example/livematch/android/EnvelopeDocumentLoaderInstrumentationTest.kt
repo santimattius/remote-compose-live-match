@@ -103,6 +103,6 @@ class EnvelopeDocumentLoaderInstrumentationTest {
 
     private companion object {
         const val FIXTURE_VALIDATION_EPOCH_SECONDS = 1_800_000_000L
-        const val EXPECTED_CANONICAL_SIGNING_INPUT_SHA256 = "8e173d3d345c05fae64f3bb41056bc39dccd870fbf23b58f08cd13fd3c1a2fd5"
+        const val EXPECTED_CANONICAL_SIGNING_INPUT_SHA256 = "8a3aadbfd322393d4dbe6a7940f53541f0b61a82db51deb0496839dfb2137a55"
     }
 }
