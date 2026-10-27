@@ -94,6 +94,25 @@ object RemoteNodeTapper {
         error("The layout never settled; last seen ")
     }
 
+    /**
+     * Waits for a node that offers the screen-reader action labelled [label], performs it the way a screen reader
+     * would, and returns whether the action was found and accepted.
+     */
+    fun performScreenReaderAction(label: String): Boolean {
+        val automation = instrumentation.uiAutomation
+        automation.serviceInfo =
+            automation.serviceInfo.apply { flags = flags or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS }
+        val deadline = SystemClock.uptimeMillis() + PLAYBACK_TIMEOUT_MS
+        while (SystemClock.uptimeMillis() < deadline) {
+            val node = findNode(automation.rootInActiveWindow) { n -> n.actionList.any { it.label?.toString() == label } }
+            if (node != null) {
+                return node.performAction(node.actionList.first { it.label?.toString() == label }.id)
+            }
+            Thread.sleep(POLL_INTERVAL_MS)
+        }
+        return false
+    }
+
     /** True when a node showing exactly [text] is rendered right now; unlike the other helpers it does not wait. */
     fun isTextPresent(text: String): Boolean {
         val automation = instrumentation.uiAutomation

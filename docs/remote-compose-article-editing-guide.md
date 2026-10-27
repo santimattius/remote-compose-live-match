@@ -54,6 +54,7 @@ el número de línea):
 | Nota de versión y artefactos de `1.0.0-alpha19` | El repositorio fija `1.0.0-alpha22` y `minSdk` 29. |
 | Ante un payload incompatible "se conserva la interacción básica" | El fallback local es un texto sin acciones. |
 | "Ver jugada" o "seguir equipo" se mapean a navegación, autenticación o deep links | Los destinos del host son demostraciones; no hay login ni navegación real. |
+| Descripciones semánticas para marcador, estado y acciones, y orden de foco predecible | Los nodos tienen buenas descripciones en el árbol, pero con TalkBack real el foco nunca entra en ellos: queda en la vista del player. El host ofrece las acciones como acciones de accesibilidad. No se probó el orden de foco por teclado. |
 | El benchmark propone tamaño, memoria, CPU y una comparación con Compose local, SDUI y WebView | Solo se miden validación, captura y primer contenido visible; el resto no se midió. |
 
 Lo que sigue en pie y conviene defender: el documento es una representación reproducible y no
@@ -223,6 +224,7 @@ marcarse como pseudocódigo si no compilan contra la versión fijada. En particu
       estructura la define el host.
 - [ ] El benchmark prometido coincide con lo que realmente se midió.
 - [ ] El fallback y los destinos de acción se describen como demostraciones, no como producto.
+- [ ] La accesibilidad se describe con lo comprobado con TalkBack real, no con lo que muestra el árbol de accesibilidad.
 - [ ] Los ejemplos y nombres de API se revisan contra la documentación de la versión fijada.
 - [ ] Los enlaces oficiales y los diagramas siguen describiendo el alcance de la afirmación que
       los acompaña.

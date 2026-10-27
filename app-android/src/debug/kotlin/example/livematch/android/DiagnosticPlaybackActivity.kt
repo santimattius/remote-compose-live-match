@@ -71,6 +71,9 @@ class DiagnosticPlaybackActivity : ComponentActivity() {
             // docs/alpha-learnings.md#register-action-listeners-after-loading-the-document.
             val dispatcher = HostActionDispatcher(loaded.presentation.matchId) { Log.i(TAG, "Host navigation: $it") }
             player.addIdActionListener { _, metadata -> onDocumentAction(dispatcher, phase, metadata) }
+            player.exposeScreenReaderActions(MatchCardActions.of(loaded.presentation)) {
+                onDocumentAction(dispatcher, phase, it.wireValue)
+            }
         }
     }
 
