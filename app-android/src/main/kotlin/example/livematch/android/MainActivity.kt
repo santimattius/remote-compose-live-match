@@ -90,6 +90,9 @@ class MainActivity : ComponentActivity() {
                     val dispatcher = HostActionDispatcher(playable.presentation.matchId, ::navigate)
                     val phase = playable.presentation.phase()
                     player.addIdActionListener { _, metadata -> onDocumentAction(dispatcher, phase, metadata) }
+                    player.exposeScreenReaderActions(MatchCardActions.of(playable.presentation)) {
+                        onDocumentAction(dispatcher, phase, it.wireValue)
+                    }
                 }
             },
         )
@@ -127,13 +130,6 @@ class MainActivity : ComponentActivity() {
         lastDestination = destination
         Toast.makeText(this, "Host handled ${destination::class.simpleName} for ${destination.matchId}", Toast.LENGTH_SHORT).show()
     }
-
-    private fun MatchPresentation.phase(): MatchPhase =
-        when (this) {
-            is MatchPresentation.Scheduled -> MatchPhase.SCHEDULED
-            is MatchPresentation.Live -> MatchPhase.LIVE
-            is MatchPresentation.Finished -> MatchPhase.FINISHED
-        }
 
     private companion object {
         const val TAG = "MainActivity"
