@@ -13,10 +13,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.remote.player.view.RemoteComposePlayer
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import example.livematch.contract.ActionAllowlist
+import androidx.lifecycle.lifecycleScope
 import example.livematch.contract.ActionId
 import example.livematch.contract.MatchPhase
+import example.livematch.contract.MatchPresentation
 import example.livematch.contract.RemoteDocumentPayload
+import kotlinx.coroutines.launch
 import java.time.Instant
 
 class DiagnosticPlaybackActivity : ComponentActivity() {
@@ -51,46 +53,53 @@ class DiagnosticPlaybackActivity : ComponentActivity() {
         fixture: String,
     ) {
         val bytes = assets.open(fixture).use { it.readBytes() }
-        if (fixture in SIGNED_ENVELOPE_FIXTURE_NAMES) {
-            val result =
-                EnvelopeDocumentLoader().load(bytes, Instant.now().epochSecond) { document ->
-                    RemoteComposePlayerAdapter().load(player, document)
-                }
-            if (result != EnvelopeLoadResult.Loaded) {
-                Log.w(TAG, "Rejected diagnostic fixture envelope: $result")
-                return
-            }
-        } else {
+        val phase = PHASE_BY_FIXTURE[fixture]
+        if (phase == null) {
             RemoteComposePlayerAdapter().load(player, RemoteDocumentPayload.from(bytes, bytes.size))
+            return
         }
-        // Must register after setDocument, not before; see MainActivity and
-        // docs/alpha-learnings.md#register-action-listeners-after-loading-the-document.
-        PHASE_BY_FIXTURE[fixture]?.let { phase ->
-            player.addIdActionListener { _, metadata -> onDocumentAction(phase, metadata) }
+        // Signed fixtures carry match data; the document is captured on-device, so loading is asynchronous.
+        lifecycleScope.launch {
+            val loaded = EnvelopeMatchLoader().load(bytes, Instant.now().epochSecond)
+            if (loaded !is MatchEnvelopeLoadResult.Loaded) {
+                Log.w(TAG, "Rejected diagnostic fixture envelope: $loaded")
+                return@launch
+            }
+            val document = compile(loaded.presentation)
+            RemoteComposePlayerAdapter().load(player, document)
+            // Must register after setDocument, not before; see MainActivity and
+            // docs/alpha-learnings.md#register-action-listeners-after-loading-the-document.
+            val dispatcher = HostActionDispatcher(loaded.presentation.matchId) { Log.i(TAG, "Host navigation: $it") }
+            player.addIdActionListener { _, metadata -> onDocumentAction(dispatcher, phase, metadata) }
         }
     }
+
+    private suspend fun compile(presentation: MatchPresentation): RemoteDocumentPayload =
+        with(AndroidMatchDocumentCompiler(this)) {
+            when (presentation) {
+                is MatchPresentation.Scheduled -> compile(presentation.match)
+                is MatchPresentation.Live -> compile(presentation.match)
+                is MatchPresentation.Finished -> compile(presentation.match)
+            }
+        }
 
     /** Exposed for instrumentation tests to observe dispatch outcomes without parsing logcat. */
     internal var lastDispatchedAction: ActionId? = null
         private set
 
     private fun onDocumentAction(
+        dispatcher: HostActionDispatcher,
         phase: MatchPhase,
         wireValue: String?,
     ) {
-        val actionId = wireValue?.let(ActionId::fromWireValue)
-        when {
-            actionId == null -> {
-                Log.w(TAG, "Ignoring unknown action id: $wireValue")
+        when (dispatcher.dispatch(phase, wireValue)) {
+            HostActionDispatchResult.Handled -> {
+                lastDispatchedAction = wireValue?.let(ActionId::fromWireValue)
+                Log.i(TAG, "Accepted action: $wireValue")
             }
 
-            ActionAllowlist.isAllowed(phase, actionId) -> {
-                lastDispatchedAction = actionId
-                Log.i(TAG, "Accepted action: ${actionId.wireValue}")
-            }
-
-            else -> {
-                Log.w(TAG, "Rejected action not allowed in $phase: ${actionId.wireValue}")
+            HostActionDispatchResult.Rejected -> {
+                Log.w(TAG, "Rejected action: $wireValue")
             }
         }
     }
@@ -109,11 +118,6 @@ class DiagnosticPlaybackActivity : ComponentActivity() {
             setOf(
                 PAINT_PROBE_FIXTURE_NAME,
                 ALPHA18_API6_CONTROL_FIXTURE_NAME,
-                LIVE_MATCH_FIXTURE_NAME,
-                FINISHED_MATCH_FIXTURE_NAME,
-            )
-        private val SIGNED_ENVELOPE_FIXTURE_NAMES =
-            setOf(
                 LIVE_MATCH_FIXTURE_NAME,
                 FINISHED_MATCH_FIXTURE_NAME,
             )
