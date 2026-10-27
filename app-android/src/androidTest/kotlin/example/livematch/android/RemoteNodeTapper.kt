@@ -63,6 +63,14 @@ object RemoteNodeTapper {
         text: String,
     ): AccessibilityNodeInfo? = findNode(node) { it.text?.toString() == text }
 
+    /** True when a node showing exactly [text] is rendered right now; unlike the other helpers it does not wait. */
+    fun isTextPresent(text: String): Boolean {
+        val automation = instrumentation.uiAutomation
+        automation.serviceInfo =
+            automation.serviceInfo.apply { flags = flags or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS }
+        return findNodeWithText(automation.rootInActiveWindow, text) != null
+    }
+
     /** Waits for the node showing [text] and returns the content description a screen reader would announce. */
     fun descriptionOf(text: String): String {
         val automation = instrumentation.uiAutomation

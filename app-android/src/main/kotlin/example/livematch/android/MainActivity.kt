@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
         MatchPlaybackResolver(
             repository =
                 LastKnownGoodDocumentRepository(
-                    FileLastKnownGoodDocumentStorage(filesDir.toPath().resolve(SNAPSHOT_NAME)),
+                    FileLastKnownGoodDocumentStorage(filesDir.toPath().resolve(LAST_KNOWN_GOOD_SNAPSHOT_NAME)),
                 ),
             compile = ::compile,
             onFailure = { Log.w(TAG, "Could not play match data", it) },
@@ -95,15 +95,8 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    private suspend fun resolvePlayback(): MatchPlayback {
-        val candidate =
-            try {
-                assets.open(SCHEDULED_FIXTURE_NAME).use { it.readBytes() }
-            } catch (_: java.io.IOException) {
-                null
-            }
-        return resolver.resolve(candidate, Instant.now().epochSecond)
-    }
+    private suspend fun resolvePlayback(): MatchPlayback =
+        resolver.resolve(CandidateSources.current.read(this), Instant.now().epochSecond)
 
     private suspend fun compile(presentation: MatchPresentation): RemoteDocumentPayload =
         when (presentation) {
@@ -144,7 +137,5 @@ class MainActivity : ComponentActivity() {
 
     private companion object {
         const val TAG = "MainActivity"
-        const val SCHEDULED_FIXTURE_NAME = "scheduled-match.rce"
-        const val SNAPSHOT_NAME = "last-known-good-match.bin"
     }
 }
