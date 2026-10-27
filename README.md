@@ -202,6 +202,21 @@ Two GitHub Actions workflows protect pull requests:
 
 Neither workflow requires the private signing key.
 
+### Landing a chain of pull requests
+
+Each pull request must stay at or below 400 changed lines, so a larger change lands as a chain
+where every PR is based on the previous branch and links the same approved issue with `Closes #N`.
+
+- Merge with merge commits, not squash. After a squash the next PR would diff against `main`
+  again and recount the lines it inherits.
+- GitHub closes the linked issue when the first PR merges to `main`, and governance requires the
+  linked issue to be open. Reopen it before retargeting each following PR to `main`; it stays
+  closed after the last one lands. Alternatively merge from the tip down, each PR into its parent
+  branch, and land the first PR, the only one that targets `main`, last.
+- Closing references are only computed once a PR targets `main`, so read the issue number from the
+  PR body when scripting this.
+- Each PR must build on its own. Check the `PR Build` command locally at every step of the chain.
+
 ## Troubleshooting
 
 ### The document appears blank
