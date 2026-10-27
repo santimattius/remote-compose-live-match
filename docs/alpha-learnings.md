@@ -1,9 +1,72 @@
 # AndroidX Remote Compose alpha learnings
 
 This project uses the pre-1.0 `androidx.compose.remote` stack, currently pinned to
-`1.0.0-alpha19`. This document keeps only durable implementation and diagnostic lessons that
-should survive the experiment. It is intentionally self-contained: generated evidence, work-unit
+`1.0.0-alpha22`. The first sections describe the current public capture path. The later sections
+that mention the JVM writer, `ClickAreaView` or `drawTextAnchored` come from the alpha19 creators,
+which have been removed, and are kept as history. This document keeps only durable implementation
+and diagnostic lessons that should survive the experiment. It is intentionally self-contained: generated evidence, work-unit
 receipts, screenshots, and internal task records are not part of the maintained documentation.
+
+## Capture on the device with the public API
+
+The backend signs match data, not a Remote Compose document. Android validates the envelope,
+decodes the data and captures it into a document with `captureSingleRemoteDocument(Context, ...)`
+and `@RemoteComposable` content, so the creation side needs an Android `Context`. `creator-jvm`
+only encodes and signs. `remote-creation-compose:1.0.0-alpha22` declares minSdk 29, so the app
+does too; devices on API 26-28 cannot install it.
+
+alpha22 also exposes a `captureSingleRemoteDocument` overload without a `Context`. This project
+does not use it. `CaptureApiEvidenceTest` only asserts that a `Context` overload exists.
+
+A candidate must compile before it replaces the cached match. Promoting it first let a valid
+payload that failed to capture overwrite the last known good one.
+
+## Use the id-based host action
+
+`hostAction(name)` creates a named action. In this project a tap on it never reached
+`RemoteComposePlayer.addIdActionListener`, and no host log appeared. `hostAction(id, metadata)`
+creates a `HostIdAction`, which does reach the listener as `onAction(id, metadata)`. Use the
+id-based overload and put the wire value in the metadata.
+
+Assign the numeric ids explicitly (`HostActionIds`). Deriving them from enum ordinals would change
+the ids baked into cached documents whenever the enum is reordered.
+
+## Host time variables
+
+Two public variables behave differently from what their names suggest.
+
+- `RemoteTimeVariables.animationTime` did not make the player repaint. Two screenshots three
+  seconds apart of a document driven by it were pixel-identical.
+- `RemoteTimeVariables.continuousSeconds` does repaint, but it is not time elapsed since the
+  document loaded. A clock built from it read 83:41 for a match that starts at 67:12, so its origin
+  is something else. This project did not determine what.
+
+The live clock therefore anchors `RemoteTimeVariables.epochSecond` to the instant the document is
+captured, and `continuousSeconds` drives the pulse. The clock counts from capture, not from the
+real start of the match, so a cached snapshot shows its old clock advancing from the next launch.
+
+## There is no reduced-motion variable
+
+Searching the public classes of `remote-creation-compose`, `remote-core` and `remote-player-view`
+alpha22 found no reduced-motion or animation-scale variable, so the document cannot branch on it.
+Because the document is captured on the device, the host resolves the preference when it captures
+(`Settings.Global.ANIMATOR_DURATION_SCALE == 0`) and keeps the LIVE indicator opaque. A setting
+change applies at the next capture, not to a document that is already playing. The clock keeps
+advancing because it is information, not decoration.
+
+## Test public-API documents through accessibility nodes
+
+Documents captured with the public API create no `ClickAreaView` children. The player exposes
+virtual accessibility nodes, and instrumentation locates and taps them.
+
+- `findAccessibilityNodeInfosByText` did not find the player's nodes, even though they were in the
+  tree. Walk the tree by hand and match `node.text`.
+- Wait until a node's bounds are identical on two consecutive reads before tapping. A tap computed
+  while the window was still resizing landed on stale coordinates and the action was lost.
+- `wm size` changes the real window size for layout tests. Restore it in `@After` and let the
+  display settle, or the next test launches into a resizing window.
+- To prove a visual claim, sample pixels and add a positive control. The reduced-motion test counts
+  distinct frames of the LIVE indicator and also asserts that it pulses when animations are on.
 
 ## Treat document distribution and trust as application-layer concerns
 
@@ -11,7 +74,8 @@ Remote Compose provides document encoding and on-device rendering. It does not p
 distribution envelope, schema version, expiration policy, or host-version compatibility gate.
 Those controls belong outside the Remote Compose document.
 
-This project wraps the raw document bytes in a bounded, versioned binary envelope. Decode lengths,
+This project wraps the signed payload in a bounded, versioned binary envelope. Since alpha22 that
+payload is match data, not document bytes; the older text below describes document bytes. Decode lengths,
 UTF-8, truncation, trailing bytes, metadata, expiration, host compatibility, and the Ed25519
 signature are validated before any bytes reach `RemoteComposePlayer`. Rejected input must produce
 no rendering callback or document mutation.
@@ -24,7 +88,7 @@ Tink's Ed25519 verifier behind `AndroidEnvelopeVerifier`, while preserving the s
 bytes, signature, and wire format. Keep an Android known-answer test and rerun it whenever the
 crypto dependency or provider configuration changes.
 
-## Load interactive documents before attachment
+## Load interactive documents before attachment (legacy writer)
 
 Loading a document after `RemoteComposePlayer` has already completed an attach/layout pass can
 register click areas in the document model without materializing their `ClickAreaView` children.
@@ -39,16 +103,16 @@ device test rather than assuming click views will be rebuilt.
 taps are silently lost. Always load or set the document first, then register listeners on the live
 document.
 
-`RemoteComposeWriter.addClickArea` works with the project's immediate-mode authoring style; the
-component/modifier DSL is not required for click delivery.
+`RemoteComposeWriter.addClickArea` worked with the alpha19 immediate-mode creators, which are
+removed. Documents captured with the public API use `hostAction(id, metadata)` instead.
 
-## Accessibility inspection is not a View-tree inspection
+## Accessibility inspection is not a View-tree inspection (legacy writer)
 
 `uiautomator dump` walks the accessibility tree and can omit real `ClickAreaView` children. When
 diagnosing whether click targets were created, inspect the live View hierarchy through a debug
 accessor or bounded reflection. Use accessibility output only for accessibility claims.
 
-## Procedural coordinates are physical pixels
+## Procedural coordinates are physical pixels (legacy writer)
 
 `RemoteComposePlayer` has no scale-to-fit API for documents authored with absolute procedural
 coordinates. The player paints those coordinates 1:1 into its measured canvas. A `320x180`
@@ -56,10 +120,10 @@ viewport therefore remains a small `320x180` region on a larger display rather t
 abstract design size.
 
 Choose viewport dimensions for the target device class, or move to a relative layout model and
-verify its behavior separately. The current phone-oriented fixtures use a width aligned with the
-Pixel 9 evidence baseline.
+verify its behavior separately. The public-API content uses `RemoteConfiguration.windowWidth`, and
+`AdaptiveLayoutTest` shows its padding scaling at three window sizes.
 
-## `drawTextAnchored` needs an explicit horizontal anchor
+## `drawTextAnchored` needs an explicit horizontal anchor (legacy writer)
 
 With `panX=0f`, `drawTextAnchored` centers text on the supplied x-coordinate, so long strings near
 the left edge clip. In alpha19, `panX=-1f` produces a flush-left anchor, `0f` centers, and `+1f`
