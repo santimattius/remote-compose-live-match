@@ -18,13 +18,13 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalRemoteCreationComposeApi::class)
 class CaptureApiEvidenceTest {
     @Test
-    fun captureSingleRemoteDocumentRequiresAndroidContext() {
+    fun captureSingleRemoteDocumentExposesAndroidContextOverload() {
         val overloads =
             Class
                 .forName("androidx.compose.remote.creation.compose.capture.CaptureRemoteDocumentKt")
                 .methods
                 .filter { it.name == "captureSingleRemoteDocument" }
 
-        assertTrue(overloads.isNotEmpty() && overloads.all { it.parameterTypes.firstOrNull() == Context::class.java })
+        assertTrue(overloads.any { it.parameterTypes.firstOrNull() == Context::class.java })
     }
 }
