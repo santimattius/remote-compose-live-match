@@ -1,8 +1,12 @@
 # Remote Compose Live Match
 
-An AndroidX Remote Compose example that authors sports-match UI documents on the JVM, signs them
-with Ed25519, validates them at the Android trust boundary, and renders them with
-`RemoteComposePlayer`.
+An AndroidX Remote Compose companion that demonstrates a signed sports-match UI document rendered
+by `RemoteComposePlayer`.
+
+The supported architecture keeps match data and its signed envelope on the backend, then has the
+Android host validate that input and convert accepted data into `@RemoteComposable` UI through
+public APIs. The host retains control of navigation, permissions, identity, and every business
+effect. `creator-jvm` only encodes and signs match data; it never builds Remote Compose documents.
 
 The project models three match phases:
 
@@ -21,12 +25,15 @@ available through a debug-only diagnostic activity.
 | --- | --- |
 | JDK | 17 |
 | Android SDK | Platform 35 |
-| Android runtime | API 26 or newer |
+| Android runtime | API 29 or newer |
 | Gradle | Use the included wrapper (`8.10.2`) |
 | adb | Required to install and launch on a device or emulator |
 
-The project currently uses Android Gradle Plugin 8.8.2, Kotlin 2.1.20, and AndroidX Remote Compose
-`1.0.0-alpha19`.
+The project uses Android Gradle Plugin 8.8.2, Kotlin 2.1.20, and AndroidX Remote Compose
+`1.0.0-alpha22`. All Remote Compose artifacts move together to this version so the supported
+Android public-capture path can use the required configuration, time, and animation APIs. Keep the
+fixture and host compatibility checks with that upgrade; do not mix Remote Compose artifact
+versions.
 
 ### Build and test
 
@@ -34,7 +41,6 @@ The project currently uses Android Gradle Plugin 8.8.2, Kotlin 2.1.20, and Andro
 ./gradlew test
 ./gradlew :app-android:assembleDebug :app-android:assembleDebugAndroidTest
 ./gradlew \
-  :creator-jvm:checkDiagnosticFixture \
   :creator-jvm:checkScheduledFixture \
   :creator-jvm:checkLiveFixture \
   :creator-jvm:checkFinishedFixture
@@ -44,7 +50,7 @@ Fixture checks validate the committed artifacts without loading a private signin
 
 ### Install and run
 
-Start an API 26+ Android device or emulator, then run:
+Start an API 29+ Android device or emulator, then run:
 
 ```bash
 ./gradlew :app-android:installDebug
@@ -53,36 +59,48 @@ adb shell am start -n example.livematch.android/.MainActivity
 
 The launcher opens the Scheduled match document after decoding and validating its signed envelope.
 
-## Architecture
+## Supported architecture
 
 ```text
-creator-jvm ─────▶ contract
-     │                ▲
-     │ signed fixtures│ validation models and policies
-     ▼                │
-  fixtures ─────▶ app-android ─────▶ RemoteComposePlayer
+backend match data ──▶ signed envelope ──▶ Android host validation
+                                                │
+                                                ▼
+                              public @RemoteComposable capture
+                                                │
+                                                ▼
+                                    RemoteComposePlayer
+                                                │
+                                                ▼
+                              allowlisted host-owned actions
 ```
 
-| Module | Responsibility |
+| Boundary | Responsibility |
 | --- | --- |
-| `contract` | Dependency-free JVM models, action allowlist, envelope codec, canonical signing input, public key, and validation policy. |
-| `creator-jvm` | Deterministically creates raw Remote Compose documents, signs envelopes, and writes fixture manifests. |
-| `app-android` | Packages fixtures, validates signed envelopes, renders accepted documents, and dispatches allowlisted actions. |
+| Backend | Creates match data and signs its bounded, versioned envelope. It does not control host effects. |
+| `contract` | Defines dependency-free models, action allowlist, envelope codec, canonical signing input, public key, and validation policy. |
+| `app-android` | Validates the envelope before use, maps accepted data to public `@RemoteComposable` UI, hosts the player, and dispatches only allowlisted actions. |
+| `RemoteComposePlayer` | Replays the captured document; it does not authorize navigation, authentication, permissions, or other business effects. |
 
-`app-android` depends on `contract`, not on `creator-jvm`. Committed fixtures are the boundary
-between document production and the Android host.
+The committed fixtures carry signed match data, not Remote Compose documents. Android captures the
+document on-device after validation, using the public alpha22 capture API, so the minimum SDK is 29.
 
-## Signed document flow
+For the corresponding article changes without editing the article in this repository, see
+[`docs/remote-compose-article-editing-guide.md`](docs/remote-compose-article-editing-guide.md).
 
-1. A creator builds raw Remote Compose document bytes.
-2. `EnvelopeSigner` signs canonical metadata and the document hash with Ed25519.
-3. `SignedFixturePublisher` writes the raw `.rc`, signed `.rce`, and manifest artifacts.
-4. Android reads the `.rce` asset through `EnvelopeDocumentLoader`.
+## Current fixture verification flow
+
+1. A creator encodes match data with `MatchPresentationCodec`.
+2. `EnvelopeSigner` signs canonical metadata and the payload hash with Ed25519.
+3. `SignedFixturePublisher` writes the raw `.match` payload, signed `.rce`, and manifest artifacts.
+4. Android reads the `.rce` asset through `LastKnownGoodDocumentRepository`, which delegates to
+   `EnvelopeMatchLoader`.
 5. `RemoteUiEnvelopeCodec` rejects invalid magic, versions, lengths, UTF-8, truncation, or trailing
    bytes.
 6. `EnvelopeValidator` checks schema, algorithm, host compatibility, timestamps, expiry, SHA-256,
    and signature.
-7. Only validated document bytes reach `RemoteComposePlayer`.
+7. Only validated match data is compiled by `AndroidMatchDocumentCompiler` and reaches
+   `RemoteComposePlayer`. A candidate that is rejected keeps the last-known-good match, and with
+   none the host shows a local fallback instead of a blank player.
 8. Action listeners are registered after the document is loaded, and every emitted action passes
    through the match-phase allowlist.
 
@@ -99,25 +117,19 @@ Committed fixture sources live in `fixtures/`.
 | `scheduled-match.rce` | Production Scheduled envelope packaged in the main APK. |
 | `live-match.rce` | Debug Live envelope. |
 | `finished-match.rce` | Debug Finished envelope. |
-| `*.rc` | Raw document probes and creator outputs. |
+| `*.match` | Raw match-data payloads that each `.rce` envelope signs. |
+| `diagnostic/*.rc` | Raw document probes for the debug diagnostic activity. |
 | `*.manifest` | Metadata and hashes used to verify deterministic publication. |
 
 ### Verify fixtures
 
 ```bash
-./gradlew :creator-jvm:checkDiagnosticFixture
 ./gradlew :creator-jvm:checkScheduledFixture
 ./gradlew :creator-jvm:checkLiveFixture
 ./gradlew :creator-jvm:checkFinishedFixture
 ```
 
 ### Regenerate fixtures
-
-The diagnostic fixture is unsigned:
-
-```bash
-./gradlew :creator-jvm:generateDiagnosticFixture
-```
 
 Scheduled, Live, and Finished generation requires `LIVE_MATCH_SIGNING_PRIVATE_KEY` containing a
 base64-encoded PKCS#8 DER Ed25519 private key:
@@ -158,7 +170,26 @@ adb shell am start \
 ```
 
 Raw `.rc` probes intentionally bypass signed-envelope validation. Live and Finished `.rce` files
-use the same validation boundary as the launcher app.
+use the same validation and on-device capture path as the launcher app.
+
+## Measuring performance
+
+`PerformanceMeasurementTest` reports the host-side cost of the signed match-data pipeline to
+logcat under the `LiveMatchPerf` tag: envelope validation and decoding, on-device document
+capture, and the time from launching the launcher activity until the match content is visible.
+It runs on a connected device or emulator:
+
+```bash
+adb logcat -c
+./gradlew :app-android:connectedDebugAndroidTest \
+  -Pandroid.testInstrumentationRunnerArguments.class=example.livematch.android.PerformanceMeasurementTest
+adb logcat -d -s LiveMatchPerf
+```
+
+Cold is the first run in the process; median and best come from 20 warm runs. The test only fails
+on absurd values (over 10 seconds), so compare numbers between runs of the same device. One
+Pixel 9 API 35 emulator run measured validation about 3 ms (cold 104 ms), capture about 4 ms
+(cold 67 ms), and first visible content about 584 ms. Treat those as an example, not a budget.
 
 ## CI
 
@@ -183,10 +214,12 @@ versions. A correctly measured player can still be hidden by opaque host chrome.
 Load the document first, then register `addIdActionListener`. Calling `setDocument` replaces the
 internal document and discards listeners registered beforehand.
 
-### Click areas do not appear after replacing a document
+### Taps never reach the host
 
-Load interactive documents before the player is attached. Late replacement can update the document
-model without materializing new `ClickAreaView` children.
+Use the id-based `hostAction(id, metadata)` overload. `hostAction(name)` creates a named action
+that `addIdActionListener` never receives. Documents captured by the public API do not
+materialize `ClickAreaView` children; instrumentation tests tap the player's accessibility nodes
+instead.
 
 ### Content renders too small
 
