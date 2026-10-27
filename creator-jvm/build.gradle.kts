@@ -14,62 +14,28 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
-fun JavaExec.fixtureArgs(check: Boolean) {
+fun JavaExec.fixtureArgs(
+    mainClassName: String,
+    check: Boolean,
+) {
     classpath = sourceSets.main.get().runtimeClasspath
-    mainClass.set("example.livematch.creator.ScheduledFixtureGenerator")
+    mainClass.set(mainClassName)
     args(rootProject.file("fixtures").absolutePath)
     if (check) args("--check")
 }
 
-tasks.register<JavaExec>("generateScheduledFixture") {
-    fixtureArgs(check = false)
+fun registerFixtureTasks(
+    name: String,
+    mainClassName: String,
+) {
+    tasks.register<JavaExec>("generate${name}Fixture") {
+        fixtureArgs(mainClassName, check = false)
+    }
+    tasks.register<JavaExec>("check${name}Fixture") {
+        fixtureArgs(mainClassName, check = true)
+    }
 }
 
-tasks.register<JavaExec>("checkScheduledFixture") {
-    fixtureArgs(check = true)
-}
-
-fun JavaExec.diagnosticFixtureArgs(check: Boolean) {
-    classpath = sourceSets.main.get().runtimeClasspath
-    mainClass.set("example.livematch.creator.DiagnosticFixtureGenerator")
-    args(rootProject.file("fixtures").absolutePath)
-    if (check) args("--check")
-}
-
-tasks.register<JavaExec>("generateDiagnosticFixture") {
-    diagnosticFixtureArgs(check = false)
-}
-
-tasks.register<JavaExec>("checkDiagnosticFixture") {
-    diagnosticFixtureArgs(check = true)
-}
-
-fun JavaExec.liveFixtureArgs(check: Boolean) {
-    classpath = sourceSets.main.get().runtimeClasspath
-    mainClass.set("example.livematch.creator.LiveFixtureGenerator")
-    args(rootProject.file("fixtures").absolutePath)
-    if (check) args("--check")
-}
-
-tasks.register<JavaExec>("generateLiveFixture") {
-    liveFixtureArgs(check = false)
-}
-
-tasks.register<JavaExec>("checkLiveFixture") {
-    liveFixtureArgs(check = true)
-}
-
-fun JavaExec.finishedFixtureArgs(check: Boolean) {
-    classpath = sourceSets.main.get().runtimeClasspath
-    mainClass.set("example.livematch.creator.FinishedFixtureGenerator")
-    args(rootProject.file("fixtures").absolutePath)
-    if (check) args("--check")
-}
-
-tasks.register<JavaExec>("generateFinishedFixture") {
-    finishedFixtureArgs(check = false)
-}
-
-tasks.register<JavaExec>("checkFinishedFixture") {
-    finishedFixtureArgs(check = true)
-}
+registerFixtureTasks("Scheduled", "example.livematch.creator.ScheduledFixtureGenerator")
+registerFixtureTasks("Live", "example.livematch.creator.LiveFixtureGenerator")
+registerFixtureTasks("Finished", "example.livematch.creator.FinishedFixtureGenerator")
