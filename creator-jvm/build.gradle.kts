@@ -8,9 +8,6 @@ kotlin {
 
 dependencies {
     implementation(project(":contract"))
-    implementation(libs.remote.core)
-    implementation(libs.remote.creation.core)
-    implementation(libs.remote.creation.jvm)
     testImplementation(kotlin("test"))
 }
 
