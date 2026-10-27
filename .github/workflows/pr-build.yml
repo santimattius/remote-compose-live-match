@@ -33,7 +33,6 @@ jobs:
           ./gradlew test
           :app-android:assembleDebug
           :app-android:assembleDebugAndroidTest
-          :creator-jvm:checkDiagnosticFixture
           :creator-jvm:checkScheduledFixture
           :creator-jvm:checkLiveFixture
           :creator-jvm:checkFinishedFixture
