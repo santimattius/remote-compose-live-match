@@ -123,7 +123,7 @@ What the cache shows when it is offline must still be true. A match read back fr
 while it is fresh:
 
 - Every match stops being shown once its envelope expires. The cache used to skip this check.
-- A live match is shown for at most 15 minutes after the envelope was created (\`SnapshotFreshness.LIVE_MAX_AGE_SECONDS\`),
+- A live match is shown for at most 15 minutes after the envelope was created (`SnapshotFreshness.LIVE_MAX_AGE_SECONDS`),
   because its score and clock stop being true while the app is offline.
 - A scheduled match stops being shown once its kickoff has passed, because it would still say "UPCOMING".
 - A finished match does not age before its envelope expires.
@@ -298,6 +298,9 @@ Two GitHub Actions workflows protect pull requests:
   committed fixtures.
 
 Neither workflow requires the private signing key.
+
+Neither workflow runs the instrumentation suite, because it needs an emulator or a device. Run it locally; see
+[Verified environments](#verified-environments) for what has been run and where.
 
 ### Landing a chain of pull requests
 
