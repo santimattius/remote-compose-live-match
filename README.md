@@ -191,6 +191,30 @@ on absurd values (over 10 seconds), so compare numbers between runs of the same 
 Pixel 9 API 35 emulator run measured validation about 3 ms (cold 104 ms), capture about 4 ms
 (cold 67 ms), and first visible content about 584 ms. Treat those as an example, not a budget.
 
+## Verified environments
+
+The instrumentation suite (25 tests) has been run on these emulators, with the results below. Anything not listed
+was not tested.
+
+| Environment | Result |
+| --- | --- |
+| `Pixel_9` AVD, Android 15 (API 35), arm64 | 25 of 25 pass, including the TalkBack test. |
+| `Pixel_API29` AVD (Pixel 5 profile), Android 10 (API 29), arm64, `google_apis` image, software rendering | 24 pass and 1 is skipped: the TalkBack test, because that image does not include TalkBack. |
+
+API 29 is the lowest level the app installs on (`minSdk` 29). Not tested: API 30 to 34, physical devices, TalkBack
+on API 29, and keyboard or D-pad focus. API 26 to 28 are excluded by `minSdk`.
+
+To run the suite on one device when several are connected, assemble both APKs and use `am instrument`.
+`connectedDebugAndroidTest` runs on every connected device, which can change the settings of a device you are using
+(font scale, window size and accessibility services are changed and restored by some tests).
+
+```bash
+./gradlew :app-android:assembleDebug :app-android:assembleDebugAndroidTest
+adb -s <serial> install -r app-android/build/outputs/apk/debug/app-android-debug.apk
+adb -s <serial> install -r app-android/build/outputs/apk/androidTest/debug/app-android-debug-androidTest.apk
+adb -s <serial> shell am instrument -w -r   example.livematch.android.test/androidx.test.runner.AndroidJUnitRunner
+```
+
 ## CI
 
 Two GitHub Actions workflows protect pull requests:
