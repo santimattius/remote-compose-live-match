@@ -119,6 +119,12 @@ object RemoteNodeTapper {
         return checkNotNull(findNodeWithText(instrumentation.uiAutomation.rootInActiveWindow, text)) { "'$text' disappeared" }
     }
 
+    /** Sends a key press the way a hardware keyboard would. */
+    fun pressKey(keyCode: Int) {
+        instrumentation.sendKeyDownUpSync(keyCode)
+        instrumentation.waitForIdleSync()
+    }
+
     /** True when a node showing exactly [text] is rendered right now; unlike the other helpers it does not wait. */
     fun isTextPresent(text: String): Boolean {
         val automation = instrumentation.uiAutomation
