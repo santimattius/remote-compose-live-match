@@ -91,31 +91,39 @@ virtual accessibility nodes, and instrumentation locates and taps them.
 - To prove a visual claim, sample pixels and add a positive control. The reduced-motion test counts
   distinct frames of the LIVE indicator and also asserts that it pulses when animations are on.
 
-## Screen readers cannot reach the nodes inside the player
+## What TalkBack focuses inside the player
 
-The accessibility tree that `UiAutomation` reads is not what TalkBack can focus. With TalkBack running on a
-Pixel 9 emulator (API 35), twelve swipes to the right, three to the left and a touch exactly on "Open match" all
-left the focus on one box the size of the whole player. TalkBack never focused a child.
+The accessibility tree that `UiAutomation` reads is not what TalkBack focuses, so tests that only read the tree cannot
+see how a screen reader reaches a card. This section records what was measured with TalkBack running on a Pixel 9
+emulator (API 35), including a correction of an earlier version of this document.
 
-The cause is visible in the node flags: every node inside the card is published with
-`isImportantForAccessibility = false` and `isScreenReaderFocusable = false`, while the player view that hosts them
-is important. TalkBack ignores nodes that are not important, so it falls back to the player view. In
-`AndroidxSemanticNodeApplier`, the only place that marks a node screen-reader focusable is `applyListItem`, for items
-of scrollable collections; the rest of the library was not inspected.
-Setting `role = Role.Button` on the actionable targets changed neither flag. The creation API only offers content
-description, role, text, state description and enabled, plus `mergeDescendants`; there is no way to ask for
-importance, focus or traversal order from the document.
+- **With the container's content description, TalkBack's first focus lands on the whole container.** The card's
+  container carried a description ("Live match. Orcas 2, Tigers 1…"). TalkBack's first focus was a box the size of
+  the player, and a touch exactly on "Open match" left it there.
+- **Without that description, the first focus lands on a child.** Removing only the container's description made the
+  first focus land on "LIVE". So the container's description is the variable that changed the first focus target.
+- **`important = false` is not the cause.** Every node inside the card is published with
+  `isImportantForAccessibility = false` and `isScreenReaderFocusable = false`. An earlier version of this document
+  concluded that TalkBack therefore ignores them. That was inferred and not tested, and a control disproved it: a
+  plain custom view with three virtual nodes from `ExploreByTouchHelper` publishes the same flags, and TalkBack's
+  first focus landed on its first child.
+- **`role = Role.Button` changed neither flag.** The creation API only offers content description, role, text, state
+  description and enabled, plus `mergeDescendants`; it has no control over importance, focus or traversal order.
 
-The consequence is that the actions inside a card, and the hidden "Match ID" detail, are unreachable for a screen
-reader user, even though every node has a good description in the tree. Tests that only read the tree cannot see
-this. The host therefore offers the card's actions as accessibility actions on the player view
-(`exposeScreenReaderActions`), routed through the same allowlisted dispatcher as a tap, and a device test performs
-them with TalkBack running. The "Show local match details" toggle changes state inside the document, so the host
-cannot offer it.
+Not verified, and why it matters: whether TalkBack can move from the first focus to the later children and activate
+them. Swipes sent with `adb input` moved the first focus but did not advance it afterwards, not even in the control
+view, and `performAction(ACTION_ACCESSIBILITY_FOCUS)` from `UiAutomation` returned false for every node, so
+navigation and native activation could not be tested. The earlier statement that the actions are unreachable was
+therefore stronger than the evidence.
 
-Not verified: what TalkBack actually says aloud, keyboard or D-pad focus, other screen readers, and any API level
-other than 35. Whether `important = false` is a limitation of alpha22 or a default of its touch helper was not
-determined.
+Because reachability could not be confirmed, the host also offers each card's actions as accessibility actions on the
+player view (`exposeScreenReaderActions`), routed through the same allowlisted dispatcher as a tap, and a device test
+performs them with TalkBack running. Dropping the container's description would likely make the children the first
+focus target, but it would also lose the sentence that reads the score as a phrase, so it was not applied. The
+"Show local match details" toggle changes state inside the document, so the host cannot offer it.
+
+Also not verified: what TalkBack says aloud, keyboard or D-pad focus, other screen readers, and any API level other
+than 35.
 
 ## Treat document distribution and trust as application-layer concerns
 
