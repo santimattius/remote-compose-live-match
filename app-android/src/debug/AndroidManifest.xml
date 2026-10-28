@@ -3,5 +3,21 @@
         <activity
             android:name=".DiagnosticPlaybackActivity"
             android:exported="true" />
+        <activity
+            android:name=".ComposeLocalActivity"
+            android:exported="true"
+            android:process=":compose" />
+        <activity
+            android:name=".SduiActivity"
+            android:exported="true"
+            android:process=":sdui" />
+        <activity
+            android:name=".WebViewActivity"
+            android:exported="true"
+            android:process=":web" />
+        <activity
+            android:name=".RemoteCardActivity"
+            android:exported="true"
+            android:process=":remote" />
     </application>
 </manifest>
