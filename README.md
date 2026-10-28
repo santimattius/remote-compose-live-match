@@ -84,9 +84,6 @@ backend match data ──▶ signed envelope ──▶ Android host validation
 The committed fixtures carry signed match data, not Remote Compose documents. Android captures the
 document on-device after validation, using the public alpha22 capture API, so the minimum SDK is 29.
 
-For the corresponding article changes without editing the article in this repository, see
-[`docs/remote-compose-article-editing-guide.md`](docs/remote-compose-article-editing-guide.md).
-
 ## Current fixture verification flow
 
 1. A creator encodes match data with `MatchPresentationCodec`.

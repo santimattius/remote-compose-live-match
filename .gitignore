@@ -6,7 +6,6 @@
 /odd/
 /docs/*
 !/docs/alpha-learnings.md
-!/docs/remote-compose-article-editing-guide.md
 
 # Gradle
 .gradle/
