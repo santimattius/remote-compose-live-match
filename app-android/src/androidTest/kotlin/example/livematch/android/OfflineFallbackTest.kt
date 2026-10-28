@@ -167,7 +167,7 @@ class OfflineFallbackTest {
             val button = generateSequence(RemoteNodeTapper.nodeShowing(RETRY_TEXT)) { it.parent }.firstOrNull { it.isClickable }
 
             assertTrue("Retry must sit inside a clickable node", button != null)
-            // The nodes inside the player are published as not important, which hides them from TalkBack.
+            // A standard Compose button: pin that it is exposed as an important, focusable and visible node.
             assertTrue("The Retry button must be important for accessibility", button!!.isImportantForAccessibility)
             assertTrue("The Retry button must be focusable", button.isFocusable)
             assertTrue("The Retry button must be visible to the user", button.isVisibleToUser)
