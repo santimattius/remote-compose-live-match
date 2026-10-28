@@ -97,7 +97,8 @@ document on-device after validation, using the public alpha22 capture API, so th
    and signature.
 7. Only validated match data is compiled by `AndroidMatchDocumentCompiler` and reaches
    `RemoteComposePlayer`. A candidate that is rejected keeps the last-known-good match, and with
-   none the host shows a local fallback instead of a blank player.
+   none the host shows a local message instead of a blank player. The message offers a Retry button
+   that resolves the candidate again by the same path as the first launch.
 8. Action listeners are registered after the document is loaded, and every emitted action passes
    through the match-phase allowlist.
 

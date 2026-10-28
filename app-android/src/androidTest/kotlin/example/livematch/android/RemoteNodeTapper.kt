@@ -113,6 +113,12 @@ object RemoteNodeTapper {
         return false
     }
 
+    /** Waits for [text] to render and returns its accessibility node, so a test can inspect how it is exposed. */
+    fun nodeShowing(text: String): AccessibilityNodeInfo {
+        boundsOf(text)
+        return checkNotNull(findNodeWithText(instrumentation.uiAutomation.rootInActiveWindow, text)) { "'$text' disappeared" }
+    }
+
     /** True when a node showing exactly [text] is rendered right now; unlike the other helpers it does not wait. */
     fun isTextPresent(text: String): Boolean {
         val automation = instrumentation.uiAutomation
