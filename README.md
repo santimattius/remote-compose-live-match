@@ -265,16 +265,17 @@ How to read it:
 
 ## Verified environments
 
-The instrumentation suite (25 tests) has been run on these emulators, with the results below. Anything not listed
+The instrumentation suite (32 tests) has been run on these emulators, with the results below. Anything not listed
 was not tested.
 
 | Environment | Result |
 | --- | --- |
-| `Pixel_9` AVD, Android 15 (API 35), arm64 | 25 of 25 pass, including the TalkBack test. |
-| `Pixel_API29` AVD (Pixel 5 profile), Android 10 (API 29), arm64, `google_apis` image, software rendering | 24 pass and 1 is skipped: the TalkBack test, because that image does not include TalkBack. |
+| `Pixel_9` AVD, Android 15 (API 35), arm64 | 32 of 32 pass, including the TalkBack test. |
+| `Pixel_API29` AVD (Pixel 5 profile), Android 10 (API 29), arm64, `google_apis` image, software rendering | Last run when the suite had 25 tests: 24 passed and 1 was skipped, the TalkBack test, because that image does not include TalkBack. Not run again since the suite grew to 32. |
 
-API 29 is the lowest level the app installs on (`minSdk` 29). Not tested: API 30 to 34, physical devices, TalkBack
-on API 29, and keyboard or D-pad focus. API 26 to 28 are excluded by `minSdk`.
+API 29 is the lowest level the app installs on (`minSdk` 29). Not tested: API 30 to 34, physical devices and TalkBack
+on API 29. Keyboard input is covered only for the Retry button (TAB then ENTER, on API 35); the Live card itself
+takes no keyboard focus. API 26 to 28 are excluded by `minSdk`.
 
 To run the suite on one device when several are connected, assemble both APKs and use `am instrument`.
 `connectedDebugAndroidTest` runs on every connected device, which can change the settings of a device you are using
