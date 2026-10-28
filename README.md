@@ -219,6 +219,50 @@ on absurd values (over 10 seconds), so compare numbers between runs of the same 
 Pixel 9 API 35 emulator run measured validation about 3 ms (cold 104 ms), capture about 4 ms
 (cold 67 ms), and first visible content about 584 ms. Treat those as an example, not a budget.
 
+## Comparing approaches
+
+The article asks for the same card built with local Compose, SDUI JSON and Remote Compose, with a
+WebView as a reference. The debug build contains all four (`ComparableCards.kt`), each in its own
+process and showing the same content: the LIVE label pulsing, both scores, a ticking match clock, a
+local "Show local match details" toggle and two actions.
+
+```bash
+./gradlew :app-android:installDebug
+python3 scripts/measure_footprint.py 3 emulator-5554
+```
+
+One run of that script on a Pixel 9 API 35 emulator (debug build, median of 3, range in brackets):
+
+| Approach | CPU ms per second | Frames per second | PSS MB | Launch ms |
+| --- | --- | --- | --- | --- |
+| Compose local | 97 [92-129] | 19 [18-27] | 68.5 | 1460 |
+| SDUI JSON | 127 [87-127] | 24 [17-26] | 68.3 | 1505 |
+| WebView | 134 [92-134] | 27 [19-55] | 101.3 | 1222 |
+| Remote Compose | 48 [38-50] | 9.5 [7-10] | 73.6 | 1544 [513-1664] |
+
+What travels and what is built:
+
+| Artifact | Bytes | DEFLATE |
+| --- | --- | --- |
+| Signed envelope (match data) | 319 | 262 |
+| Remote Compose document built on the device | 1539 | 732 |
+| SDUI JSON tree | 405 | 216 |
+| HTML, CSS and JavaScript | 759 | 487 |
+
+How to read it:
+
+- Remote Compose used about half the CPU of the others, **and drew about half the frames**. The
+  pulse is a continuous animation, so fewer frames means fewer paints, not necessarily cheaper
+  paints. This run does not say which. Compare it with the frame rate before quoting the CPU.
+- The signed envelope is the smallest thing that travels because it carries data only. The card's
+  structure is code in the app, so the built document is larger than the SDUI tree or the HTML.
+  Sending the document itself instead would change that comparison.
+- The WebView's renderer runs in a separate process that these numbers do not include, so its
+  memory is understated.
+- It is an emulator, a debug build and three runs. The launch time of the Remote card has one run
+  at 513 ms that was not explained. Do not turn any of this into a claim about battery or about
+  production devices.
+
 ## Verified environments
 
 The instrumentation suite (25 tests) has been run on these emulators, with the results below. Anything not listed
