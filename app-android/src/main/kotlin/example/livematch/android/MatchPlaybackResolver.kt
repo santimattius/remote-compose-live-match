@@ -32,10 +32,15 @@ class MatchPlaybackResolver(
         nowEpochSeconds: Long,
     ): MatchPlayback {
         repository.validatedCandidate(candidate, nowEpochSeconds)?.let { validated ->
-            playable(validated.document)?.let { playback ->
-                // A cache that cannot be written must not stop a match we already built from playing.
-                attempt { repository.promote(validated) }
-                return playback
+            // When the cache cannot be read there is nothing to roll back, so the candidate is not blocked.
+            if (attempt { repository.isAcceptable(validated) } == false) {
+                onFailure(RejectedUpdate("Rejected an update for match ${validated.metadata.matchId}: revision ${validated.metadata.revision} would roll the cached match back"))
+            } else {
+                playable(validated.document)?.let { playback ->
+                    // A cache that cannot be written must not stop a match we already built from playing.
+                    attempt { repository.promote(validated) }
+                    return playback
+                }
             }
         }
         val lastKnownGood = attempt { repository.lastKnownGood() } as? DocumentResolution.LastKnownGood
@@ -59,3 +64,8 @@ class MatchPlaybackResolver(
             null
         }
 }
+
+/** An update that was validated but refused because it would replace the cached match with an older one. */
+class RejectedUpdate(
+    message: String,
+) : Exception(message)

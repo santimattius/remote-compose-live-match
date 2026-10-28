@@ -101,6 +101,21 @@ document on-device after validation, using the public alpha22 capture API, so th
 8. Action listeners are registered after the document is loaded, and every emitted action passes
    through the match-phase allowlist.
 
+### Revisions and replays
+
+A validly signed envelope can still be an old one. The cache therefore keeps the `matchId`, `revision`, creation and
+expiry times of the match it stores, and refuses to replace it with an older document of the same match:
+
+- A higher `revision` replaces the cached match. A different `matchId` replaces it too.
+- The same `revision` is accepted only when the content is identical (a harmless re-delivery); different content under
+  the same revision is a conflict and is refused.
+- A lower `revision` is a rollback and is refused. The match that was already cached keeps playing, and the refusal is
+  reported through the resolver's failure callback.
+
+So a backend must increase `revision` for every new document of the same match. These fields are covered by the
+envelope signature, so they cannot be forged. A cache file written before this rule existed holds no metadata, cannot
+be ordered, and is ignored. Not covered yet: how old a cached match may be before it stops being shown as current.
+
 Android verification uses an isolated Tink Ed25519 implementation because platform JCA provider
 behavior is not reliable for this public-key import path across the supported Android range. JVM
 signing and verification continue to use standard JCA APIs.
