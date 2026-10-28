@@ -80,7 +80,7 @@ class LastKnownGoodDocumentRepository(
         nowEpochSeconds: Long,
     ): DocumentResolution {
         val validated = validatedCandidate(candidate, nowEpochSeconds)
-        if (validated != null) {
+        if (validated != null && isAcceptable(validated)) {
             promote(validated)
             return DocumentResolution.Candidate(validated)
         }
@@ -92,6 +92,22 @@ class LastKnownGoodDocumentRepository(
         candidate: ByteArray?,
         nowEpochSeconds: Long,
     ): ValidatedMatch? = candidate?.let { validatedDocumentLoader.load(it.copyOf(), nowEpochSeconds) }
+
+    /**
+     * False when accepting [candidate] would roll the cached match back. For the same match, a lower revision is a
+     * replay of an older document, and the same revision with different content is a conflict; both are refused.
+     * The same revision with identical content is a harmless re-delivery. A different match or an empty cache never
+     * conflicts.
+     */
+    fun isAcceptable(candidate: ValidatedMatch): Boolean {
+        val cached = cachedSnapshot() ?: return true
+        if (cached.metadata.matchId != candidate.metadata.matchId) return true
+        return when {
+            candidate.metadata.revision > cached.metadata.revision -> true
+            candidate.metadata.revision == cached.metadata.revision -> candidate.document.bytes.contentEquals(cached.document.bytes)
+            else -> false
+        }
+    }
 
     /** Makes [match] the durable snapshot; callers promote only matches they could actually use. */
     fun promote(match: ValidatedMatch) {

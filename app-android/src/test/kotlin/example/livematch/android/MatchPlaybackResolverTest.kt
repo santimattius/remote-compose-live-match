@@ -10,10 +10,13 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class MatchPlaybackResolverTest {
     private val presentation = MatchPresentation.Scheduled(ScheduledMatch("match-1", "Orcas", "Tigers", 1_800_000_000_000))
     private val matchPayload = MatchPresentationCodec.encode(presentation)
+    private val newerPresentation = MatchPresentation.Scheduled(ScheduledMatch("match-1", "Lions", "Bears", 1_800_000_000_000))
+    private val newerPayload = MatchPresentationCodec.encode(newerPresentation)
     private val compiled = RemoteDocumentPayload.from(byteArrayOf(7, 7), 2)
 
     @Test
@@ -115,6 +118,51 @@ class MatchPlaybackResolverTest {
             resolver.resolve(byteArrayOf(9), nowEpochSeconds = 1_500)
 
             assertEquals(listOf("capture failed"), failures.map { it.message })
+        }
+
+    @Test
+    fun `an older update for the same match does not replace the cached match`() =
+        runBlocking {
+            val cached = snapshotBytes(validated(matchPayload, revision = 5))
+            val storage = InMemoryStorage(cached)
+            val failures = mutableListOf<Throwable>()
+            val resolver = resolver(storage = storage, candidate = validated(newerPayload, revision = 4), onFailure = { failures += it })
+
+            val playback = resolver.resolve(byteArrayOf(9), nowEpochSeconds = 1_500)
+
+            assertEquals(presentation, assertIs<MatchPlayback.Playable>(playback).presentation)
+            assertContentEquals(cached, storage.read())
+            assertTrue(assertNotNull(failures.singleOrNull()) is RejectedUpdate)
+        }
+
+    @Test
+    fun `a newer update replaces the cached match`() =
+        runBlocking {
+            val storage = InMemoryStorage(snapshotBytes(validated(matchPayload, revision = 5)))
+
+            val playback =
+                resolver(storage = storage, candidate = validated(newerPayload, revision = 6))
+                    .resolve(byteArrayOf(9), nowEpochSeconds = 1_500)
+
+            assertEquals(newerPresentation, assertIs<MatchPlayback.Playable>(playback).presentation)
+            assertEquals(6, SnapshotCodec.decode(assertNotNull(storage.read()))?.metadata?.revision)
+        }
+
+    @Test
+    fun `delivering the same revision again plays it without reporting a rejection`() =
+        runBlocking {
+            val failures = mutableListOf<Throwable>()
+            val resolver =
+                resolver(
+                    storage = InMemoryStorage(snapshotBytes(validated(matchPayload, revision = 5))),
+                    candidate = validated(matchPayload, revision = 5),
+                    onFailure = { failures += it },
+                )
+
+            val playback = resolver.resolve(byteArrayOf(9), nowEpochSeconds = 1_500)
+
+            assertEquals(presentation, assertIs<MatchPlayback.Playable>(playback).presentation)
+            assertTrue(failures.isEmpty())
         }
 
     private fun storedPayload(storage: InMemoryStorage): ByteArray = assertNotNull(SnapshotCodec.decode(assertNotNull(storage.read()))).document.bytes

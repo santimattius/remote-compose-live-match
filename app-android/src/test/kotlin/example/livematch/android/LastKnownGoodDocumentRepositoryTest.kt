@@ -3,8 +3,10 @@ package example.livematch.android
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class LastKnownGoodDocumentRepositoryTest {
     private val cached = validated(payloadOf(4, 5, 6), matchId = "match-1", revision = 5)
@@ -63,6 +65,30 @@ class LastKnownGoodDocumentRepositoryTest {
         val result = LastKnownGoodDocumentRepository(storage).resolve(candidate = null, nowEpochSeconds = NOW)
 
         assertEquals(DocumentResolution.LocalFallback, result)
+    }
+
+    @Test
+    fun `an older revision of the cached match is a rollback and is not acceptable`() {
+        val repository = LastKnownGoodDocumentRepository(RecordingStorage(snapshotBytes(cached)))
+
+        assertFalse(repository.isAcceptable(validated(payloadOf(7, 7), matchId = "match-1", revision = 4)))
+    }
+
+    @Test
+    fun `the same revision is acceptable only when the content is identical`() {
+        val repository = LastKnownGoodDocumentRepository(RecordingStorage(snapshotBytes(cached)))
+
+        assertTrue(repository.isAcceptable(validated(payloadOf(4, 5, 6), matchId = "match-1", revision = 5)))
+        assertFalse(repository.isAcceptable(validated(payloadOf(9, 9, 9), matchId = "match-1", revision = 5)))
+    }
+
+    @Test
+    fun `newer revisions, other matches and an empty cache are acceptable`() {
+        val repository = LastKnownGoodDocumentRepository(RecordingStorage(snapshotBytes(cached)))
+
+        assertTrue(repository.isAcceptable(validated(payloadOf(7), matchId = "match-1", revision = 6)))
+        assertTrue(repository.isAcceptable(validated(payloadOf(7), matchId = "match-2", revision = 1)))
+        assertTrue(LastKnownGoodDocumentRepository(RecordingStorage()).isAcceptable(validated(payloadOf(7), revision = 1)))
     }
 
     private class RecordingStorage(
