@@ -5,22 +5,28 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.remote.player.view.RemoteComposePlayer
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import example.livematch.contract.ActionId
 import example.livematch.contract.MatchPhase
@@ -54,7 +60,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             var playback by remember { mutableStateOf<MatchPlayback?>(null) }
-            LaunchedEffect(Unit) { playback = withContext(Dispatchers.IO) { resolvePlayback() } }
+            var attempt by remember { mutableIntStateOf(0) }
+            // Changing [attempt] runs the same resolution as the first launch, so Retry recovers by the normal path.
+            LaunchedEffect(attempt) {
+                playback = null
+                playback = withContext(Dispatchers.IO) { resolvePlayback() }
+            }
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     when (val current = playback) {
@@ -63,15 +74,11 @@ class MainActivity : ComponentActivity() {
                         }
 
                         MatchPlayback.LocalFallback -> {
-                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text("Match information is unavailable right now.")
-                            }
+                            RetryableMessage("Match information is unavailable right now.") { attempt += 1 }
                         }
 
                         MatchPlayback.Stale -> {
-                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text("Match information is out of date.")
-                            }
+                            RetryableMessage("Match information is out of date.") { attempt += 1 }
                         }
 
                         null -> {
@@ -80,6 +87,23 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    /** Local content for when there is no match to play. It keeps one basic interaction: trying again. */
+    @androidx.compose.runtime.Composable
+    private fun RetryableMessage(
+        message: String,
+        onRetry: () -> Unit,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(message)
+            Spacer(Modifier.height(16.dp))
+            Button(onClick = onRetry) { Text("Retry") }
         }
     }
 

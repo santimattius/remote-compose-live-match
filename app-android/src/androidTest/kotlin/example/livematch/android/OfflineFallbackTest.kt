@@ -112,6 +112,68 @@ class OfflineFallbackTest {
         assertFalse(RemoteNodeTapper.isTextPresent(STALE_TEXT))
     }
 
+    @Test
+    fun theFallbackOffersARetryThatPlaysTheMatchOnceItIsAvailable() {
+        CandidateSources.current = CandidateSource { null }
+
+        ActivityScenario.launch(MainActivity::class.java).use {
+            RemoteNodeTapper.awaitTextStartingWith(FALLBACK_TEXT)
+            CandidateSources.current = CandidateSource { packaged }
+
+            RemoteNodeTapper.tapText(RETRY_TEXT)
+
+            RemoteNodeTapper.boundsOf("Remind me")
+            assertFalse(RemoteNodeTapper.isTextPresent(FALLBACK_TEXT))
+        }
+        assertTrue("The recovered match should have been cached", snapshot.isFile)
+    }
+
+    @Test
+    fun theOutOfDateMessageOffersARetryToo() {
+        cacheFixture("live-match.rce")
+        CandidateSources.current = CandidateSource { null }
+
+        ActivityScenario.launch(MainActivity::class.java).use {
+            RemoteNodeTapper.awaitTextStartingWith(STALE_TEXT)
+            CandidateSources.current = CandidateSource { packaged }
+
+            RemoteNodeTapper.tapText(RETRY_TEXT)
+
+            RemoteNodeTapper.boundsOf("Remind me")
+            assertFalse(RemoteNodeTapper.isTextPresent(STALE_TEXT))
+        }
+    }
+
+    @Test
+    fun retryKeepsBeingOfferedWhileTheMatchIsStillUnavailable() {
+        CandidateSources.current = CandidateSource { null }
+
+        ActivityScenario.launch(MainActivity::class.java).use {
+            RemoteNodeTapper.awaitTextStartingWith(FALLBACK_TEXT)
+
+            RemoteNodeTapper.tapText(RETRY_TEXT)
+
+            RemoteNodeTapper.awaitTextStartingWith(FALLBACK_TEXT)
+            assertTrue("Retry should still be offered", RemoteNodeTapper.isTextPresent(RETRY_TEXT))
+        }
+    }
+
+    @Test
+    fun retryIsAnImportantFocusableButtonForScreenReaders() {
+        CandidateSources.current = CandidateSource { null }
+
+        ActivityScenario.launch(MainActivity::class.java).use {
+            // The text is a child of the button, so look at the nearest node that can be clicked.
+            val button = generateSequence(RemoteNodeTapper.nodeShowing(RETRY_TEXT)) { it.parent }.firstOrNull { it.isClickable }
+
+            assertTrue("Retry must sit inside a clickable node", button != null)
+            // The nodes inside the player are published as not important, which hides them from TalkBack.
+            assertTrue("The Retry button must be important for accessibility", button!!.isImportantForAccessibility)
+            assertTrue("The Retry button must be focusable", button.isFocusable)
+            assertTrue("The Retry button must be visible to the user", button.isVisibleToUser)
+        }
+    }
+
     private fun launchAndAwaitMatch() {
         ActivityScenario.launch(MainActivity::class.java).use { RemoteNodeTapper.boundsOf("Remind me") }
     }
@@ -147,5 +209,6 @@ class OfflineFallbackTest {
     private companion object {
         const val FALLBACK_TEXT = "Match information is unavailable right now."
         const val STALE_TEXT = "Match information is out of date."
+        const val RETRY_TEXT = "Retry"
     }
 }
