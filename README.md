@@ -114,7 +114,22 @@ expiry times of the match it stores, and refuses to replace it with an older doc
 
 So a backend must increase `revision` for every new document of the same match. These fields are covered by the
 envelope signature, so they cannot be forged. A cache file written before this rule existed holds no metadata, cannot
-be ordered, and is ignored. Not covered yet: how old a cached match may be before it stops being shown as current.
+be ordered, and is ignored.
+
+### Stale cached matches
+
+What the cache shows when it is offline must still be true. A match read back from the cache is shown as current only
+while it is fresh:
+
+- Every match stops being shown once its envelope expires. The cache used to skip this check.
+- A live match is shown for at most 15 minutes after the envelope was created (\`SnapshotFreshness.LIVE_MAX_AGE_SECONDS\`),
+  because its score and clock stop being true while the app is offline.
+- A scheduled match stops being shown once its kickoff has passed, because it would still say "UPCOMING".
+- A finished match does not age before its envelope expires.
+
+A match that is not shown this way produces the "Match information is out of date." message, reported through the
+failure callback, instead of the old data. A fresh candidate is judged only by its envelope expiry, because the backend
+vouches for it. The 15 minutes are a choice of this example, not a property of Remote Compose.
 
 Android verification uses an isolated Tink Ed25519 implementation because platform JCA provider
 behavior is not reliable for this public-key import path across the supported Android range. JVM

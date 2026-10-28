@@ -3,6 +3,7 @@ package example.livematch.android
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import example.livematch.contract.MatchPresentationCodec
 import org.junit.After
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertFalse
@@ -89,8 +90,46 @@ class OfflineFallbackTest {
         assertFalse(RemoteNodeTapper.isTextPresent("Remind me"))
     }
 
+    @Test
+    fun aCachedLiveMatchThatWentStaleIsNotShownAsCurrent() {
+        // The live fixture was created in 2023, far beyond the limit for showing a live score as current.
+        cacheFixture("live-match.rce")
+        CandidateSources.current = CandidateSource { null }
+
+        launchAndAwaitText(STALE_TEXT)
+
+        assertFalse(RemoteNodeTapper.isTextPresent("LIVE"))
+        assertFalse(RemoteNodeTapper.isTextPresent(FALLBACK_TEXT))
+    }
+
+    @Test
+    fun aCachedFinishedMatchStillPlaysOfflineBecauseItDoesNotAge() {
+        cacheFixture("finished-match.rce")
+        CandidateSources.current = CandidateSource { null }
+
+        ActivityScenario.launch(MainActivity::class.java).use { RemoteNodeTapper.boundsOf("View summary") }
+
+        assertFalse(RemoteNodeTapper.isTextPresent(STALE_TEXT))
+    }
+
     private fun launchAndAwaitMatch() {
         ActivityScenario.launch(MainActivity::class.java).use { RemoteNodeTapper.boundsOf("Remind me") }
+    }
+
+    private fun launchAndAwaitText(text: String) {
+        ActivityScenario.launch(MainActivity::class.java).use { RemoteNodeTapper.awaitTextStartingWith(text) }
+    }
+
+    /** Writes a validated copy of a packaged fixture into the cache, as if it had been played earlier. */
+    private fun cacheFixture(assetName: String) {
+        val bytes = context.assets.open(assetName).use { it.readBytes() }
+        val loaded = EnvelopeMatchLoader().load(bytes, Instant.now().epochSecond) as MatchEnvelopeLoadResult.Loaded
+        val match =
+            ValidatedMatch(
+                SnapshotMetadata(loaded.presentation.matchId, loaded.revision, loaded.createdAtEpochSeconds, loaded.expiresAtEpochSeconds),
+                MatchPresentationCodec.encode(loaded.presentation),
+            )
+        snapshot.writeBytes(SnapshotCodec.encode(match))
     }
 
     private fun launchAndAwaitFallback() {
@@ -107,5 +146,6 @@ class OfflineFallbackTest {
 
     private companion object {
         const val FALLBACK_TEXT = "Match information is unavailable right now."
+        const val STALE_TEXT = "Match information is out of date."
     }
 }

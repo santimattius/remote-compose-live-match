@@ -1,5 +1,6 @@
 package example.livematch.android
 
+import example.livematch.contract.LiveMatch
 import example.livematch.contract.MatchPresentation
 import example.livematch.contract.MatchPresentationCodec
 import example.livematch.contract.RemoteDocumentPayload
@@ -164,6 +165,64 @@ class MatchPlaybackResolverTest {
             assertEquals(presentation, assertIs<MatchPlayback.Playable>(playback).presentation)
             assertTrue(failures.isEmpty())
         }
+
+    @Test
+    fun `an offline cached live match that has gone stale is not shown as current`() =
+        runBlocking {
+            val live = liveMatch(createdAt = 1_000)
+            val failures = mutableListOf<Throwable>()
+            val resolver = resolver(storage = InMemoryStorage(snapshotBytes(live)), candidate = null, onFailure = { failures += it })
+
+            val playback = resolver.resolve(null, nowEpochSeconds = 1_000 + SnapshotFreshness.LIVE_MAX_AGE_SECONDS + 1)
+
+            assertEquals(MatchPlayback.Stale, playback)
+            assertTrue(assertNotNull(failures.singleOrNull()) is StaleSnapshot)
+        }
+
+    @Test
+    fun `an offline cached live match within the limit still plays`() =
+        runBlocking<Unit> {
+            val resolver = resolver(storedBytes = snapshotBytes(liveMatch(createdAt = 1_000)), candidate = null)
+
+            val playback = resolver.resolve(null, nowEpochSeconds = 1_000 + SnapshotFreshness.LIVE_MAX_AGE_SECONDS)
+
+            assertIs<MatchPlayback.Playable>(playback)
+        }
+
+    @Test
+    fun `a cached match past its envelope expiry is not shown`() =
+        runBlocking {
+            val resolver = resolver(storedBytes = snapshotBytes(liveMatch(createdAt = 1_000, expiresAt = 1_100)), candidate = null)
+
+            assertEquals(MatchPlayback.Stale, resolver.resolve(null, nowEpochSeconds = 1_100))
+        }
+
+    @Test
+    fun `a fresh candidate is judged by its envelope expiry, not by the live age limit`() =
+        runBlocking<Unit> {
+            val resolver = resolver(storedBytes = null, candidate = liveMatch(createdAt = 1_000))
+
+            val playback = resolver.resolve(byteArrayOf(9), nowEpochSeconds = 1_000 + 10 * SnapshotFreshness.LIVE_MAX_AGE_SECONDS)
+
+            assertIs<MatchPlayback.Playable>(playback)
+        }
+
+    @Test
+    fun `a cached snapshot whose payload cannot be decoded uses the local fallback`() =
+        runBlocking {
+            val corrupt = validated(payloadOf(1, 2, 3), matchId = "match-1")
+            val resolver = resolver(storedBytes = snapshotBytes(corrupt), candidate = null)
+
+            assertEquals(MatchPlayback.LocalFallback, resolver.resolve(null, nowEpochSeconds = 1_500))
+        }
+
+    private fun liveMatch(
+        createdAt: Long,
+        expiresAt: Long = 2_000_000_000,
+    ) = ValidatedMatch(
+        SnapshotMetadata("live-1", 1, createdAt, expiresAt),
+        MatchPresentationCodec.encode(MatchPresentation.Live(LiveMatch("live-1", "Orcas", "Tigers", 2, 1, "2nd Half", "67:12"))),
+    )
 
     private fun storedPayload(storage: InMemoryStorage): ByteArray = assertNotNull(SnapshotCodec.decode(assertNotNull(storage.read()))).document.bytes
 
