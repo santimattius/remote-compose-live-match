@@ -61,12 +61,25 @@ Two public variables behave differently from what their names suggest.
 - `RemoteTimeVariables.animationTime` did not make the player repaint. Two screenshots three
   seconds apart of a document driven by it were pixel-identical.
 - `RemoteTimeVariables.continuousSeconds` does repaint, but it is not time elapsed since the
-  document loaded. A clock built from it read 83:41 for a match that starts at 67:12, so its origin
-  is something else. This project did not determine what.
+  document loaded. In alpha22, `RemoteClock.TimeSnapshot.getContinuousSeconds()` is
+  `minute * 60 + second + millisOfSecond * 0.001`: the seconds elapsed within the current hour of the
+  host clock, which returns to zero every hour. This explains a clock built from it that read 83:41 for
+  a match that starts at 67:12, an excess of 989 seconds (16 min 29 s into the hour); that value was not
+  measured again after reading the bytecode. Anything computed from it as elapsed time would jump back
+  at the top of every hour. Its fractional part is continuous, which is why it is safe for the pulse.
 
 The live clock therefore anchors `RemoteTimeVariables.epochSecond` to the instant the document is
 captured, and `continuousSeconds` drives the pulse. The clock counts from capture, not from the
 real start of the match, so a cached snapshot shows its old clock advancing from the next launch.
+
+## Keyboard access
+
+On the Pixel 9 emulator (API 35), TAB and the D-pad keys gave keyboard focus to nothing on the Live card, as read from
+the `focused` attribute that `uiautomator` reports. The same key events do reach the app: on the local message that
+appears when there is no match, TAB followed by ENTER activates Retry, and ENTER alone does nothing, which a device
+test pins. So the launcher's basic interaction works without a touch screen, and the card's own actions have no
+keyboard path. The host's screen reader actions are accessibility actions, not key handlers. Why the player takes no
+keyboard focus, and whether it can be made to, was not investigated.
 
 ## There is no reduced-motion variable
 
