@@ -8,6 +8,7 @@ import example.livematch.contract.RemoteUiEnvelope
 import example.livematch.contract.ScheduledMatch
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
@@ -21,7 +22,10 @@ class EnvelopeValidatedDocumentLoaderTest {
 
         val document = loader.load(byteArrayOf(9), nowEpochSeconds = 1_500)
 
-        assertContentEquals(payload.bytes, assertNotNull(document).bytes)
+        val match = assertNotNull(document)
+        assertContentEquals(payload.bytes, match.document.bytes)
+        // The envelope in this test is signed for match-1, revision 1, created at 1000 and expiring at 2000.
+        assertEquals(SnapshotMetadata("match-1", 1, 1_000, 2_000), match.metadata)
     }
 
     @Test

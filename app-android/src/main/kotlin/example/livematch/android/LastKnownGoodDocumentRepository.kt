@@ -12,19 +12,19 @@ interface LastKnownGoodDocumentStorage {
     fun write(documentBytes: ByteArray)
 }
 
-/** Validates an envelope candidate and exposes its document only when it passed the trust boundary. */
+/** Validates an envelope candidate and exposes its match only when it passed the trust boundary. */
 fun interface ValidatedDocumentLoader {
     fun load(
         candidate: ByteArray,
         nowEpochSeconds: Long,
-    ): RemoteDocumentPayload?
+    ): ValidatedMatch?
 }
 
 /**
  * Adapts the signed match-data trust boundary for use by [LastKnownGoodDocumentRepository].
  *
- * Validation remains centralized in [EnvelopeMatchLoader]; this adapter only exposes the
- * validated match payload bytes, which are what the cache persists and the host later compiles.
+ * Validation remains centralized in [EnvelopeMatchLoader]; this adapter only exposes the validated match payload,
+ * which is what the cache persists and the host later compiles, together with the metadata of its envelope.
  */
 class EnvelopeValidatedDocumentLoader(
     private val envelopeMatchLoader: EnvelopeMatchLoader = EnvelopeMatchLoader(),
@@ -32,9 +32,19 @@ class EnvelopeValidatedDocumentLoader(
     override fun load(
         candidate: ByteArray,
         nowEpochSeconds: Long,
-    ): RemoteDocumentPayload? =
+    ): ValidatedMatch? =
         when (val result = envelopeMatchLoader.load(candidate, nowEpochSeconds)) {
-            is MatchEnvelopeLoadResult.Loaded -> MatchPresentationCodec.encode(result.presentation)
+            is MatchEnvelopeLoadResult.Loaded ->
+                ValidatedMatch(
+                    SnapshotMetadata(
+                        result.presentation.matchId,
+                        result.revision,
+                        result.createdAtEpochSeconds,
+                        result.expiresAtEpochSeconds,
+                    ),
+                    MatchPresentationCodec.encode(result.presentation),
+                )
+
             else -> null
         }
 }
@@ -42,12 +52,12 @@ class EnvelopeValidatedDocumentLoader(
 sealed interface DocumentResolution {
     /** A newly received envelope was validated and promoted to the durable snapshot. */
     data class Candidate(
-        val document: RemoteDocumentPayload,
+        val match: ValidatedMatch,
     ) : DocumentResolution
 
-    /** No candidate was available or valid, so playback should use the durable snapshot. */
+    /** No candidate was available or acceptable, so playback should use the durable snapshot. */
     data class LastKnownGood(
-        val document: RemoteDocumentPayload,
+        val match: ValidatedMatch,
     ) : DocumentResolution
 
     /** No usable candidate or durable snapshot exists; the host must render its local fallback. */
@@ -55,7 +65,7 @@ sealed interface DocumentResolution {
 }
 
 /**
- * Resolves a candidate to a safe document without allowing rejected input to change the cache.
+ * Resolves a candidate to a safe match without allowing rejected input to change the cache.
  *
  * The host owns persistence by providing [storage]. This core intentionally has no Android
  * framework dependency, so it can be exercised deterministically in JVM tests and wired to a
@@ -69,10 +79,10 @@ class LastKnownGoodDocumentRepository(
         candidate: ByteArray?,
         nowEpochSeconds: Long,
     ): DocumentResolution {
-        val validatedDocument = validatedCandidate(candidate, nowEpochSeconds)
-        if (validatedDocument != null) {
-            promote(validatedDocument)
-            return DocumentResolution.Candidate(validatedDocument)
+        val validated = validatedCandidate(candidate, nowEpochSeconds)
+        if (validated != null) {
+            promote(validated)
+            return DocumentResolution.Candidate(validated)
         }
         return lastKnownGood()
     }
@@ -81,21 +91,14 @@ class LastKnownGoodDocumentRepository(
     fun validatedCandidate(
         candidate: ByteArray?,
         nowEpochSeconds: Long,
-    ): RemoteDocumentPayload? = candidate?.let { validatedDocumentLoader.load(it.copyOf(), nowEpochSeconds) }
+    ): ValidatedMatch? = candidate?.let { validatedDocumentLoader.load(it.copyOf(), nowEpochSeconds) }
 
-    /** Makes [document] the durable snapshot; callers promote only documents they could actually use. */
-    fun promote(document: RemoteDocumentPayload) {
-        storage.write(document.bytes)
+    /** Makes [match] the durable snapshot; callers promote only matches they could actually use. */
+    fun promote(match: ValidatedMatch) {
+        storage.write(SnapshotCodec.encode(match))
     }
 
-    fun lastKnownGood(): DocumentResolution {
-        val persistedBytes = storage.read() ?: return DocumentResolution.LocalFallback
-        val document =
-            try {
-                RemoteDocumentPayload.from(persistedBytes, persistedBytes.size)
-            } catch (_: IllegalArgumentException) {
-                null
-            }
-        return document?.let(DocumentResolution::LastKnownGood) ?: DocumentResolution.LocalFallback
-    }
+    fun lastKnownGood(): DocumentResolution = cachedSnapshot()?.let(DocumentResolution::LastKnownGood) ?: DocumentResolution.LocalFallback
+
+    private fun cachedSnapshot(): ValidatedMatch? = storage.read()?.let(SnapshotCodec::decode)
 }

@@ -32,14 +32,14 @@ class MatchPlaybackResolver(
         nowEpochSeconds: Long,
     ): MatchPlayback {
         repository.validatedCandidate(candidate, nowEpochSeconds)?.let { validated ->
-            playable(validated)?.let { playback ->
+            playable(validated.document)?.let { playback ->
                 // A cache that cannot be written must not stop a match we already built from playing.
                 attempt { repository.promote(validated) }
                 return playback
             }
         }
         val lastKnownGood = attempt { repository.lastKnownGood() } as? DocumentResolution.LastKnownGood
-        return lastKnownGood?.let { playable(it.document) } ?: MatchPlayback.LocalFallback
+        return lastKnownGood?.let { playable(it.match.document) } ?: MatchPlayback.LocalFallback
     }
 
     private suspend fun playable(matchData: RemoteDocumentPayload): MatchPlayback.Playable? =
