@@ -14,6 +14,9 @@ sealed interface MatchPlayback {
 
     /** Nothing usable exists, so the host renders its own local content instead of a blank player. */
     data object LocalFallback : MatchPlayback
+
+    /** A cached match exists but is expired or too old to be shown as current. */
+    data object Stale : MatchPlayback
 }
 
 /**
@@ -43,8 +46,15 @@ class MatchPlaybackResolver(
                 }
             }
         }
-        val lastKnownGood = attempt { repository.lastKnownGood() } as? DocumentResolution.LastKnownGood
-        return lastKnownGood?.let { playable(it.match.document) } ?: MatchPlayback.LocalFallback
+        val cached = (attempt { repository.lastKnownGood() } as? DocumentResolution.LastKnownGood)?.match
+            ?: return MatchPlayback.LocalFallback
+        // A payload that cannot be decoded cannot be judged, so it is treated like a missing cache.
+        val freshness = attempt { SnapshotFreshness.of(cached, nowEpochSeconds) } ?: return MatchPlayback.LocalFallback
+        if (freshness != Freshness.FRESH) {
+            onFailure(StaleSnapshot("The cached match ${cached.metadata.matchId} is ${freshness.name.lowercase()} and was not shown as current"))
+            return MatchPlayback.Stale
+        }
+        return playable(cached.document) ?: MatchPlayback.LocalFallback
     }
 
     private suspend fun playable(matchData: RemoteDocumentPayload): MatchPlayback.Playable? =
@@ -67,5 +77,10 @@ class MatchPlaybackResolver(
 
 /** An update that was validated but refused because it would replace the cached match with an older one. */
 class RejectedUpdate(
+    message: String,
+) : Exception(message)
+
+/** A cached match that was not shown because it is expired or too old to describe the present. */
+class StaleSnapshot(
     message: String,
 ) : Exception(message)

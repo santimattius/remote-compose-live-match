@@ -68,6 +68,12 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
+                        MatchPlayback.Stale -> {
+                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Text("Match information is out of date.")
+                            }
+                        }
+
                         null -> {
                             Unit
                         }
