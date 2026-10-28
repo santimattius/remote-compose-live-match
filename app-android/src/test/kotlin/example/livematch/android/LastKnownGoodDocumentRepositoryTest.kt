@@ -1,70 +1,68 @@
 package example.livematch.android
 
-import example.livematch.contract.RemoteDocumentPayload
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 
 class LastKnownGoodDocumentRepositoryTest {
+    private val cached = validated(payloadOf(4, 5, 6), matchId = "match-1", revision = 5)
+
     @Test
-    fun `promotes only bytes returned by the validated candidate loader`() {
-        val validatedBytes = byteArrayOf(1, 2, 3)
+    fun `promotes only what the validated candidate loader returned, with its metadata`() {
+        val candidate = validated(payloadOf(1, 2, 3), revision = 6)
         val storage = RecordingStorage()
-        val repository =
-            LastKnownGoodDocumentRepository(
-                storage = storage,
-                validatedDocumentLoader = { _, _ -> document(validatedBytes) },
-            )
+        val repository = LastKnownGoodDocumentRepository(storage, validatedDocumentLoader = { _, _ -> candidate })
 
         val result = repository.resolve(candidate = byteArrayOf(9), nowEpochSeconds = NOW)
 
-        val promoted = assertIs<DocumentResolution.Candidate>(result)
-        assertContentEquals(validatedBytes, promoted.document.bytes)
-        assertContentEquals(validatedBytes, storage.persistedBytes)
+        assertEquals(candidate, assertIs<DocumentResolution.Candidate>(result).match)
+        val persisted = assertNotNull(SnapshotCodec.decode(assertNotNull(storage.persistedBytes)))
+        assertEquals(candidate.metadata, persisted.metadata)
+        assertContentEquals(candidate.document.bytes, persisted.document.bytes)
         assertEquals(1, storage.writeCount)
     }
 
     @Test
-    fun `rejected candidates return last known good bytes without mutating storage`() {
-        val lastKnownGood = byteArrayOf(4, 5, 6)
-        val storage = RecordingStorage(lastKnownGood)
-        val repository =
-            LastKnownGoodDocumentRepository(
-                storage = storage,
-                validatedDocumentLoader = { _, _ -> null },
-            )
+    fun `rejected candidates return the last known good match without mutating storage`() {
+        val storage = RecordingStorage(snapshotBytes(cached))
+        val repository = LastKnownGoodDocumentRepository(storage, validatedDocumentLoader = { _, _ -> null })
 
         val result = repository.resolve(candidate = byteArrayOf(9), nowEpochSeconds = NOW)
 
-        val cached = assertIs<DocumentResolution.LastKnownGood>(result)
-        assertContentEquals(lastKnownGood, cached.document.bytes)
-        assertContentEquals(lastKnownGood, storage.persistedBytes)
+        assertEquals(cached.metadata, assertIs<DocumentResolution.LastKnownGood>(result).match.metadata)
+        assertContentEquals(snapshotBytes(cached), storage.persistedBytes)
         assertEquals(0, storage.writeCount)
     }
 
     @Test
-    fun `unavailable candidates return persisted last known good bytes`() {
-        val lastKnownGood = byteArrayOf(4, 5, 6)
-        val storage = RecordingStorage(lastKnownGood)
-        val repository = LastKnownGoodDocumentRepository(storage)
+    fun `unavailable candidates return the persisted last known good match`() {
+        val storage = RecordingStorage(snapshotBytes(cached))
 
-        val result = repository.resolve(candidate = null, nowEpochSeconds = NOW)
+        val result = LastKnownGoodDocumentRepository(storage).resolve(candidate = null, nowEpochSeconds = NOW)
 
-        val cached = assertIs<DocumentResolution.LastKnownGood>(result)
-        assertContentEquals(lastKnownGood, cached.document.bytes)
+        assertContentEquals(cached.document.bytes, assertIs<DocumentResolution.LastKnownGood>(result).match.document.bytes)
         assertEquals(0, storage.writeCount)
     }
 
     @Test
-    fun `unavailable candidate without persisted document returns local fallback`() {
+    fun `unavailable candidate without a persisted match returns the local fallback`() {
         val storage = RecordingStorage()
-        val repository = LastKnownGoodDocumentRepository(storage)
 
-        val result = repository.resolve(candidate = null, nowEpochSeconds = NOW)
+        val result = LastKnownGoodDocumentRepository(storage).resolve(candidate = null, nowEpochSeconds = NOW)
 
         assertEquals(DocumentResolution.LocalFallback, result)
         assertEquals(0, storage.writeCount)
+    }
+
+    @Test
+    fun `a snapshot without metadata cannot be ordered or aged, so it is ignored`() {
+        val storage = RecordingStorage(byteArrayOf(4, 5, 6))
+
+        val result = LastKnownGoodDocumentRepository(storage).resolve(candidate = null, nowEpochSeconds = NOW)
+
+        assertEquals(DocumentResolution.LocalFallback, result)
     }
 
     private class RecordingStorage(
@@ -88,7 +86,5 @@ class LastKnownGoodDocumentRepositoryTest {
 
     private companion object {
         const val NOW = 1_800_000_000L
-
-        fun document(bytes: ByteArray): RemoteDocumentPayload = RemoteDocumentPayload.from(bytes, bytes.size)
     }
 }

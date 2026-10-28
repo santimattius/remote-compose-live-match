@@ -10,6 +10,9 @@ import example.livematch.contract.RemoteUiEnvelopeCodec
 sealed class MatchEnvelopeLoadResult {
     data class Loaded(
         val presentation: MatchPresentation,
+        val revision: Long,
+        val createdAtEpochSeconds: Long,
+        val expiresAtEpochSeconds: Long,
     ) : MatchEnvelopeLoadResult()
 
     data object Malformed : MatchEnvelopeLoadResult()
@@ -53,7 +56,12 @@ class EnvelopeMatchLoader(
                 return MatchEnvelopeLoadResult.Malformed
             }
         return if (presentation.matchId == envelope.matchId) {
-            MatchEnvelopeLoadResult.Loaded(presentation)
+            MatchEnvelopeLoadResult.Loaded(
+                presentation,
+                envelope.revision,
+                envelope.createdAtEpochSeconds,
+                envelope.expiresAtEpochSeconds,
+            )
         } else {
             MatchEnvelopeLoadResult.MetadataMismatch
         }

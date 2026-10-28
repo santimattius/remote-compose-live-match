@@ -9,6 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 
 class MatchPlaybackResolverTest {
     private val presentation = MatchPresentation.Scheduled(ScheduledMatch("match-1", "Orcas", "Tigers", 1_800_000_000_000))
@@ -18,7 +19,7 @@ class MatchPlaybackResolverTest {
     @Test
     fun `compiles a validated candidate for playback`() =
         runBlocking {
-            val resolver = resolver(storedBytes = null, validated = matchPayload)
+            val resolver = resolver(storedBytes = null, candidate = validated(matchPayload))
 
             val playback = resolver.resolve(byteArrayOf(9), nowEpochSeconds = 1_500)
 
@@ -30,7 +31,7 @@ class MatchPlaybackResolverTest {
     @Test
     fun `falls back to the last known good match when the candidate is rejected`() =
         runBlocking {
-            val resolver = resolver(storedBytes = matchPayload.bytes, validated = null)
+            val resolver = resolver(storedBytes = snapshotBytes(validated(matchPayload)), candidate = null)
 
             val playback = resolver.resolve(byteArrayOf(9), nowEpochSeconds = 1_500)
 
@@ -40,10 +41,10 @@ class MatchPlaybackResolverTest {
     @Test
     fun `uses the local fallback when nothing usable exists or compilation fails`() =
         runBlocking {
-            val nothing = resolver(storedBytes = null, validated = null).resolve(null, nowEpochSeconds = 1_500)
-            val corrupt = resolver(storedBytes = byteArrayOf(1, 2, 3), validated = null).resolve(null, nowEpochSeconds = 1_500)
+            val nothing = resolver(storedBytes = null, candidate = null).resolve(null, nowEpochSeconds = 1_500)
+            val corrupt = resolver(storedBytes = byteArrayOf(1, 2, 3), candidate = null).resolve(null, nowEpochSeconds = 1_500)
             val failing =
-                resolver(storedBytes = null, validated = matchPayload, compile = { error("capture failed") })
+                resolver(storedBytes = null, candidate = validated(matchPayload), compile = { error("capture failed") })
                     .resolve(byteArrayOf(9), nowEpochSeconds = 1_500)
 
             assertEquals(MatchPlayback.LocalFallback, nothing)
@@ -54,19 +55,19 @@ class MatchPlaybackResolverTest {
     @Test
     fun `keeps the last known good match when a valid candidate fails to compile`() =
         runBlocking {
-            val broken = MatchPresentationCodec.encode(MatchPresentation.Scheduled(ScheduledMatch("broken", "A", "B", 1)))
-            val storage = InMemoryStorage(matchPayload.bytes)
+            val broken = validated(MatchPresentationCodec.encode(MatchPresentation.Scheduled(ScheduledMatch("broken", "A", "B", 1))), matchId = "broken")
+            val storage = InMemoryStorage(snapshotBytes(validated(matchPayload)))
             val resolver =
                 resolver(
                     storage = storage,
-                    validated = broken,
+                    candidate = broken,
                     compile = { if (it.matchId == "broken") error("capture failed") else compiled },
                 )
 
             val playback = resolver.resolve(byteArrayOf(9), nowEpochSeconds = 1_500)
 
             assertEquals(presentation, assertIs<MatchPlayback.Playable>(playback).presentation)
-            assertContentEquals(matchPayload.bytes, storage.read())
+            assertContentEquals(matchPayload.bytes, storedPayload(storage))
         }
 
     @Test
@@ -74,9 +75,9 @@ class MatchPlaybackResolverTest {
         runBlocking {
             val storage = InMemoryStorage(null)
 
-            resolver(storage = storage, validated = matchPayload).resolve(byteArrayOf(9), nowEpochSeconds = 1_500)
+            resolver(storage = storage, candidate = validated(matchPayload)).resolve(byteArrayOf(9), nowEpochSeconds = 1_500)
 
-            assertContentEquals(matchPayload.bytes, storage.read())
+            assertContentEquals(matchPayload.bytes, storedPayload(storage))
         }
 
     @Test
@@ -84,7 +85,7 @@ class MatchPlaybackResolverTest {
         runBlocking {
             val storage = ThrowingStorage(failWrites = true)
 
-            val playback = resolver(storage = storage, validated = matchPayload).resolve(byteArrayOf(9), nowEpochSeconds = 1_500)
+            val playback = resolver(storage = storage, candidate = validated(matchPayload)).resolve(byteArrayOf(9), nowEpochSeconds = 1_500)
 
             assertEquals(presentation, assertIs<MatchPlayback.Playable>(playback).presentation)
         }
@@ -94,7 +95,7 @@ class MatchPlaybackResolverTest {
         runBlocking {
             val storage = ThrowingStorage(failReads = true)
 
-            val playback = resolver(storage = storage, validated = null).resolve(null, nowEpochSeconds = 1_500)
+            val playback = resolver(storage = storage, candidate = null).resolve(null, nowEpochSeconds = 1_500)
 
             assertEquals(MatchPlayback.LocalFallback, playback)
         }
@@ -106,7 +107,7 @@ class MatchPlaybackResolverTest {
             val resolver =
                 resolver(
                     storage = InMemoryStorage(null),
-                    validated = matchPayload,
+                    candidate = validated(matchPayload),
                     compile = { error("capture failed") },
                     onFailure = { failures += it },
                 )
@@ -116,22 +117,24 @@ class MatchPlaybackResolverTest {
             assertEquals(listOf("capture failed"), failures.map { it.message })
         }
 
+    private fun storedPayload(storage: InMemoryStorage): ByteArray = assertNotNull(SnapshotCodec.decode(assertNotNull(storage.read()))).document.bytes
+
     private fun resolver(
         storedBytes: ByteArray?,
-        validated: RemoteDocumentPayload?,
+        candidate: ValidatedMatch?,
         compile: suspend (MatchPresentation) -> RemoteDocumentPayload = { compiled },
-    ) = resolver(InMemoryStorage(storedBytes), validated, compile)
+    ) = resolver(InMemoryStorage(storedBytes), candidate, compile)
 
     private fun resolver(
         storage: LastKnownGoodDocumentStorage,
-        validated: RemoteDocumentPayload?,
+        candidate: ValidatedMatch?,
         compile: suspend (MatchPresentation) -> RemoteDocumentPayload = { compiled },
         onFailure: (Throwable) -> Unit = {},
     ) = MatchPlaybackResolver(
         repository =
             LastKnownGoodDocumentRepository(
                 storage = storage,
-                validatedDocumentLoader = ValidatedDocumentLoader { _, _ -> validated },
+                validatedDocumentLoader = ValidatedDocumentLoader { _, _ -> candidate },
             ),
         compile = compile,
         onFailure = onFailure,
